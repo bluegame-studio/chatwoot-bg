@@ -390,11 +390,6 @@ export default {
       return (
         this.isAWhatsAppCloudChannel &&
         this.isEmbeddedSignupWhatsApp &&
-        (!this.isOnChatwootCloud ||
-          this.isFeatureEnabledonAccount(
-            this.accountId,
-            FEATURE_FLAGS.WHATSAPP_EMBEDDED_SIGNUP_FLOW
-          )) &&
         this.inbox.reauthorization_required
       );
     },
@@ -416,6 +411,7 @@ export default {
       return (
         this.isAWhatsAppCloudChannel &&
         this.isEmbeddedSignupWhatsApp &&
+        !this.whatsappUnauthorized &&
         this.healthError?.type !== 'authorization' &&
         this.isFeatureEnabledonAccount(
           this.accountId,
