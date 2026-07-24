@@ -4,7 +4,6 @@ FROM ruby:3.4.4-alpine3.21 AS pre-builder
 
 ARG NODE_VERSION="24.13.0"
 ARG PNPM_VERSION="10.2.0"
-ARG SOURCE_COMMIT
 ENV NODE_VERSION=${NODE_VERSION}
 ENV PNPM_VERSION=${PNPM_VERSION}
 
@@ -89,6 +88,7 @@ RUN if [ "$RAILS_ENV" = "production" ]; then \
 
 # Jenkins passes the exact checked-out source commit to preserve runtime metadata
 # even when the Docker build context excludes Git metadata.
+ARG SOURCE_COMMIT
 RUN test -n "$SOURCE_COMMIT" \
   && printf '%s\n' "$SOURCE_COMMIT" > /app/.git_sha
 

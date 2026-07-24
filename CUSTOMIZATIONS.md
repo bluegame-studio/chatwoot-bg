@@ -9,6 +9,9 @@ on top.
 
 - `714dfa7035c1c75ff64151b96de582e8a69404c9` proxies Active Storage avatar
   representations through the application URL so Cloudflare can cache them.
+- `SOURCE_COMMIT` is intentionally declared after dependency installation and
+  asset compilation in `docker/Dockerfile`. Moving it near the top invalidates
+  the expensive `bundle install` layer on every application commit.
 
 Use `git log upstream/v4.11.1..bg/v4.11.1 --reverse` to audit every fork commit.
 Pipeline definitions are intentionally owned by the private `bg-devops`
