@@ -7,6 +7,7 @@ import ContactDetailsItem from './ContactDetailsItem.vue';
 import MultiselectDropdown from 'shared/components/ui/MultiselectDropdown.vue';
 import ConversationLabels from './labels/LabelBox.vue';
 import { CONVERSATION_PRIORITY } from '../../../../shared/constants/messages';
+import { getConversationPriorityStyle } from 'shared/constants/conversationPriorityStyles';
 import { CONVERSATION_EVENTS } from '../../../helper/AnalyticsHelper/events';
 import { useTrack } from 'dashboard/composables';
 import NextButton from 'dashboard/components-next/button/Button.vue';
@@ -42,21 +43,25 @@ export default {
           id: CONVERSATION_PRIORITY.URGENT,
           name: this.$t('CONVERSATION.PRIORITY.OPTIONS.URGENT'),
           icon: 'i-woot-priority-urgent',
+          ...getConversationPriorityStyle(CONVERSATION_PRIORITY.URGENT),
         },
         {
           id: CONVERSATION_PRIORITY.HIGH,
           name: this.$t('CONVERSATION.PRIORITY.OPTIONS.HIGH'),
           icon: 'i-woot-priority-high',
+          ...getConversationPriorityStyle(CONVERSATION_PRIORITY.HIGH),
         },
         {
           id: CONVERSATION_PRIORITY.MEDIUM,
           name: this.$t('CONVERSATION.PRIORITY.OPTIONS.MEDIUM'),
           icon: 'i-woot-priority-medium',
+          ...getConversationPriorityStyle(CONVERSATION_PRIORITY.MEDIUM),
         },
         {
           id: CONVERSATION_PRIORITY.LOW,
           name: this.$t('CONVERSATION.PRIORITY.OPTIONS.LOW'),
           icon: 'i-woot-priority-low',
+          ...getConversationPriorityStyle(CONVERSATION_PRIORITY.LOW),
         },
       ],
     };

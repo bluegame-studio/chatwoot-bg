@@ -18,16 +18,35 @@ export const useImageZoom = imageRef => {
   const zoomScale = ref(1);
   const imgTransformOriginPoint = ref(DEFAULT_IMG_TRANSFORM_ORIGIN);
   const activeImageRotation = ref(0);
+  const imagePanPosition = ref({ x: 0, y: 0 });
+  const isPanning = ref(false);
+  const panStartPoint = ref({ x: 0, y: 0 });
+  const panStartPosition = ref({ x: 0, y: 0 });
+
+  const imageCursor = computed(() => {
+    if (isPanning.value) return 'grabbing';
+    if (zoomScale.value > MIN_ZOOM_LEVEL) return 'grab';
+    return zoomScale.value < MAX_ZOOM_LEVEL ? 'zoom-in' : 'zoom-out';
+  });
 
   const imageWrapperStyle = computed(() => ({
-    transform: `rotate(${activeImageRotation.value}deg)`,
+    transform: `translate3d(${imagePanPosition.value.x}px, ${imagePanPosition.value.y}px, 0) rotate(${activeImageRotation.value}deg)`,
+  }));
+
+  const imageStageStyle = computed(() => ({
+    cursor: imageCursor.value,
+    touchAction: 'none',
   }));
 
   const imageStyle = computed(() => ({
     transform: `scale(${zoomScale.value})`,
-    cursor: zoomScale.value < MAX_ZOOM_LEVEL ? 'zoom-in' : 'zoom-out',
     transformOrigin: `${imgTransformOriginPoint.value}`,
   }));
+
+  const resetPanPosition = () => {
+    imagePanPosition.value = { x: 0, y: 0 };
+    isPanning.value = false;
+  };
 
   // Resets the transform origin to center
   const resetTransformOrigin = () => {
@@ -48,6 +67,7 @@ export const useImageZoom = imageRef => {
 
     // Reset zoom when rotating
     zoomScale.value = 1;
+    resetPanPosition();
     resetTransformOrigin();
   };
 
@@ -100,6 +120,11 @@ export const useImageZoom = imageRef => {
 
     // Apply the new scale
     zoomScale.value = newScale;
+
+    if (newScale === MIN_ZOOM_LEVEL) {
+      resetPanPosition();
+      resetTransformOrigin();
+    }
   };
 
   // Handles double-click zoom toggling
@@ -117,6 +142,11 @@ export const useImageZoom = imageRef => {
 
     // Apply the new scale
     zoomScale.value = newScale;
+
+    if (newScale === MIN_ZOOM_LEVEL) {
+      resetPanPosition();
+      resetTransformOrigin();
+    }
   };
 
   // Handles mouse wheel zooming for images
@@ -161,9 +191,37 @@ export const useImageZoom = imageRef => {
     false
   );
 
+  const onPointerDownImage = e => {
+    if (!imageRef.value || zoomScale.value === MIN_ZOOM_LEVEL) return;
+
+    e.preventDefault();
+    isPanning.value = true;
+    panStartPoint.value = { x: e.clientX, y: e.clientY };
+    panStartPosition.value = { ...imagePanPosition.value };
+    e.currentTarget?.setPointerCapture?.(e.pointerId);
+  };
+
+  const onPointerMoveImage = e => {
+    if (!isPanning.value) return;
+
+    e.preventDefault();
+    imagePanPosition.value = {
+      x: panStartPosition.value.x + e.clientX - panStartPoint.value.x,
+      y: panStartPosition.value.y + e.clientY - panStartPoint.value.y,
+    };
+  };
+
+  const onPointerUpImage = e => {
+    if (!isPanning.value) return;
+
+    isPanning.value = false;
+    e.currentTarget?.releasePointerCapture?.(e.pointerId);
+  };
+
   const resetZoomAndRotation = () => {
     activeImageRotation.value = 0;
     zoomScale.value = 1;
+    resetPanPosition();
     resetTransformOrigin();
   };
 
@@ -171,9 +229,14 @@ export const useImageZoom = imageRef => {
     zoomScale,
     imgTransformOriginPoint,
     activeImageRotation,
+    imagePanPosition,
+    isPanning,
+    imageCursor,
     imageWrapperStyle,
+    imageStageStyle,
     imageStyle,
     getZoomOrigin,
+    resetPanPosition,
     resetTransformOrigin,
     onRotate,
     onZoom,
@@ -181,6 +244,9 @@ export const useImageZoom = imageRef => {
     onWheelImageZoom,
     onMouseMove,
     onMouseLeave,
+    onPointerDownImage,
+    onPointerMoveImage,
+    onPointerUpImage,
     resetZoomAndRotation,
   };
 };

@@ -135,7 +135,12 @@ class ActionCableListener < BaseListener
     conversation, account = extract_conversation_and_account(event)
     tokens = user_tokens(account, conversation.inbox.members)
 
-    broadcast(account, tokens, ASSIGNEE_CHANGED, conversation.push_event_data)
+    broadcast(
+      account,
+      tokens,
+      ASSIGNEE_CHANGED,
+      conversation.push_event_data.merge(assignment_change_data(event))
+    )
   end
 
   def team_changed(event)
@@ -228,6 +233,20 @@ class ActionCableListener < BaseListener
     payload[:performer] = Current.user&.push_event_data if Current.user.present?
 
     ::ActionCableBroadcastJob.perform_later(tokens.uniq, event_name, payload)
+  end
+
+  def assignment_change_data(event)
+    changed_attributes = event.data[:changed_attributes] || {}
+    previous_assignee_id, assignee_id = changed_attributes['assignee_id'] || changed_attributes[:assignee_id] || []
+    performed_by = event.data[:performed_by]
+
+    {
+      assignment_change: {
+        previous_assignee_id: previous_assignee_id,
+        assignee_id: assignee_id,
+        automatic: performed_by.instance_of?(AssignmentPolicy) || performed_by.instance_of?(Inbox)
+      }
+    }
   end
 end
 

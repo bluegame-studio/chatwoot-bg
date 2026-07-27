@@ -11,6 +11,8 @@ import { CONTENT_TYPES } from 'dashboard/components-next/message/constants.js';
 const state = {
   allConversations: [],
   attachments: {},
+  newAssignmentAlertConversationIds: {},
+  assignmentAlertLastNotifiedAt: {},
   listLoadingStatus: true,
   chatStatusFilter: wootConstants.STATUS_TYPE.OPEN,
   chatSortFilter: wootConstants.SORT_BY_TYPE.LATEST,
@@ -105,6 +107,9 @@ export const mutations = {
   [types.SET_CURRENT_CHAT_WINDOW](_state, activeChat) {
     if (activeChat) {
       _state.selectedChatId = activeChat.id;
+      const { [activeChat.id]: _removed, ...rest } =
+        _state.newAssignmentAlertConversationIds;
+      _state.newAssignmentAlertConversationIds = rest;
     }
   },
 
@@ -323,6 +328,29 @@ export const mutations = {
     if (!message?.call) return;
 
     message.call = { ...message.call, status: callStatus };
+  },
+
+  [types.SET_CONVERSATION_NEW_ASSIGNMENT_ALERT](_state, conversationId) {
+    _state.newAssignmentAlertConversationIds = {
+      ..._state.newAssignmentAlertConversationIds,
+      [conversationId]: true,
+    };
+  },
+
+  [types.CLEAR_CONVERSATION_NEW_ASSIGNMENT_ALERT](_state, conversationId) {
+    const { [conversationId]: _removed, ...rest } =
+      _state.newAssignmentAlertConversationIds;
+    _state.newAssignmentAlertConversationIds = rest;
+  },
+
+  [types.SET_CONVERSATION_ASSIGNMENT_ALERT_NOTIFIED_AT](
+    _state,
+    { conversationId, notifiedAt }
+  ) {
+    _state.assignmentAlertLastNotifiedAt = {
+      ..._state.assignmentAlertLastNotifiedAt,
+      [conversationId]: notifiedAt,
+    };
   },
 
   [types.SET_ACTIVE_INBOX](_state, inboxId) {

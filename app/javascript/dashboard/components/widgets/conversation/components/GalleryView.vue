@@ -54,6 +54,7 @@ const imageRef = useTemplateRef('imageRef');
 
 const {
   imageWrapperStyle,
+  imageStageStyle,
   imageStyle,
   onRotate,
   activeImageRotation,
@@ -62,6 +63,9 @@ const {
   onWheelImageZoom,
   onMouseMove,
   onMouseLeave,
+  onPointerDownImage,
+  onPointerMoveImage,
+  onPointerUpImage,
   resetZoomAndRotation,
 } = useImageZoom(imageRef);
 
@@ -283,7 +287,7 @@ onMounted(() => {
           <div class="flex-1 flex items-center justify-center overflow-hidden">
             <div
               v-if="isImage"
-              :style="imageWrapperStyle"
+              :style="[imageWrapperStyle, imageStageStyle]"
               class="flex items-center justify-center origin-center"
               :class="{
                 // Adjust dimensions when rotated 90/270 degrees to maintain visibility
@@ -292,6 +296,15 @@ onMounted(() => {
                   activeImageRotation % 180 !== 0,
                 'size-full': activeImageRotation % 180 === 0,
               }"
+              @click.stop
+              @dblclick.stop="onDoubleClickZoomImage"
+              @wheel.prevent.stop="onWheelImageZoom"
+              @mousemove="onMouseMove"
+              @mouseleave="onMouseLeave"
+              @pointerdown.stop="onPointerDownImage"
+              @pointermove.stop="onPointerMoveImage"
+              @pointerup.stop="onPointerUpImage"
+              @pointercancel.stop="onPointerUpImage"
             >
               <img
                 ref="imageRef"
@@ -299,11 +312,6 @@ onMounted(() => {
                 :src="activeAttachment.data_url"
                 :style="imageStyle"
                 class="max-h-full max-w-full object-contain duration-100 ease-in-out transform select-none"
-                @click.stop
-                @dblclick.stop="onDoubleClickZoomImage"
-                @wheel.prevent.stop="onWheelImageZoom"
-                @mousemove="onMouseMove"
-                @mouseleave="onMouseLeave"
               />
             </div>
 

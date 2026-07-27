@@ -20,6 +20,7 @@ const props = defineProps({
   inbox: { type: Object, default: () => ({}) },
   selected: { type: Boolean, default: false },
   isActiveChat: { type: Boolean, default: false },
+  hasNewAssignmentAlert: { type: Boolean, default: false },
   showAssignee: { type: Boolean, default: false },
   showInboxName: { type: Boolean, default: false },
   isInboxView: { type: Boolean, default: false },
@@ -79,9 +80,19 @@ const selectedModel = computed({
       'grid-cols-[minmax(0,2fr)_minmax(0,1fr)]': showLabelsSection,
       'grid-cols-[minmax(0,2fr)_max-content]': !showLabelsSection,
     }"
+    :style="
+      hasNewAssignmentAlert
+        ? { backgroundColor: '#FFF4E5', borderColor: '#F79009' }
+        : {}
+    "
     @click="$emit('click', $event)"
     @contextmenu="$emit('contextmenu', $event)"
   >
+    <span
+      v-if="hasNewAssignmentAlert"
+      class="absolute top-2 bottom-2 w-1 rounded-full ltr:left-1 rtl:right-1"
+      style="background-color: #f79009"
+    />
     <!-- LEFT SECTION -->
     <div class="flex items-center gap-2 min-w-0 flex-1">
       <div class="flex items-center justify-center flex-shrink-0" @click.stop>
@@ -154,6 +165,10 @@ const selectedModel = computed({
 
       <h4
         class="text-heading-3 my-0 capitalize truncate text-n-slate-12 font-medium w-32 flex-shrink-0"
+        :class="{
+          'font-semibold': hasNewAssignmentAlert,
+        }"
+        :style="hasNewAssignmentAlert ? { color: '#B54708' } : {}"
       >
         {{ currentContact.name }}
       </h4>
@@ -164,6 +179,7 @@ const selectedModel = computed({
         :voice-call-direction="voiceCallData.direction"
         :unread-count="unreadCount"
         :show-expanded-preview="false"
+        :highlight-new-assignment="hasNewAssignmentAlert"
       />
     </div>
 
@@ -189,6 +205,17 @@ const selectedModel = computed({
           class="font-440 !text-xs text-n-slate-11"
         />
       </div>
+      <span
+        v-if="hasNewAssignmentAlert"
+        class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-semibold leading-3 border"
+        style="
+          color: #b54708;
+          background-color: #fff4e5;
+          border-color: #f79009;
+        "
+      >
+        新分配
+      </span>
     </div>
   </div>
 </template>

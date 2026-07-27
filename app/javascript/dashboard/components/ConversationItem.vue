@@ -65,6 +65,9 @@ const currentContact = computed(() =>
 );
 
 const isActiveChat = computed(() => currentChat.value.id === props.source.id);
+const hasNewAssignmentAlert = computed(() =>
+  store.getters.getNewAssignmentAlertByConversationId(props.source.id)
+);
 
 const inbox = computed(() => {
   const inboxId = props.source.inbox_id;
@@ -188,6 +191,7 @@ const onDeleteConversation = () => {
     :inbox="inbox"
     :selected="isConversationSelected(source.id)"
     :is-active-chat="isActiveChat"
+    :has-new-assignment-alert="hasNewAssignmentAlert"
     :show-assignee="showAssigneeForExpandedCard"
     :show-inbox-name="showInboxName"
     :is-inbox-view="isInboxView"
@@ -206,6 +210,7 @@ const onDeleteConversation = () => {
     :inbox="inbox"
     :selected="isConversationSelected(source.id)"
     :is-active-chat="isActiveChat"
+    :has-new-assignment-alert="hasNewAssignmentAlert"
     :show-assignee="showAssignee"
     :show-inbox-name="showInboxName"
     @click="onCardClick"

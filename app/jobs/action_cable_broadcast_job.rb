@@ -27,7 +27,10 @@ class ActionCableBroadcastJob < ApplicationJob
 
     account = Account.find(data[:account_id])
     conversation = account.conversations.find_by!(display_id: data[:id])
-    conversation.push_event_data.merge(account_id: data[:account_id])
+    broadcast_data = conversation.push_event_data.merge(account_id: data[:account_id])
+    assignment_change = data[:assignment_change] || data['assignment_change']
+    broadcast_data[:assignment_change] = assignment_change if event_name == ASSIGNEE_CHANGED && assignment_change.present?
+    broadcast_data
   end
 
   def broadcast_to_members(members, event_name, broadcast_data)

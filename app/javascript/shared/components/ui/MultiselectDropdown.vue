@@ -75,6 +75,26 @@ const selectedItemName = computed(() =>
 const selectedThumbnail = computed(
   () => props.selectedItem?.thumbnail || props.selectedItem?.avatar_url
 );
+
+const selectedItemStyle = computed(() => {
+  const { color, backgroundColor } = props.selectedItem || {};
+  if (!color && !backgroundColor) return {};
+
+  return {
+    ...(color ? { color } : {}),
+    ...(backgroundColor ? { backgroundColor } : {}),
+  };
+});
+
+const selectedItemIconStyle = computed(() => {
+  const { color } = props.selectedItem || {};
+  return color ? { color } : {};
+});
+
+const selectedItemIconBadgeStyle = computed(() => {
+  const { backgroundColor } = props.selectedItem || {};
+  return backgroundColor ? { backgroundColor } : {};
+});
 </script>
 
 <template>
@@ -88,6 +108,7 @@ const selectedThumbnail = computed(
           showSearchDropdown ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'
         "
         class="w-full !px-2"
+        :style="selectedItemStyle"
         @click="
           () => toggleDropdown() // ensure that the event is not passed to the button
         "
@@ -132,11 +153,17 @@ const selectedThumbnail = computed(
             class="size-3.5 !text-sm"
           />
         </div>
-        <Icon
+        <span
           v-else-if="hasValue && hasIcon"
-          :icon="selectedItem.icon"
-          class="size-5 text-n-slate-11"
-        />
+          class="inline-flex items-center justify-center flex-shrink-0 rounded-md size-6 bg-n-alpha-2"
+          :style="selectedItemIconBadgeStyle"
+        >
+          <Icon
+            :icon="selectedItem.icon"
+            :style="selectedItemIconStyle"
+            class="size-4 text-n-slate-11"
+          />
+        </span>
       </Button>
       <div
         :class="{

@@ -10,6 +10,10 @@ import Avatar from 'dashboard/components-next/avatar/Avatar.vue';
 import CardMessagePreview from './CardMessagePreview.vue';
 import CardMessagePreviewWithMeta from './CardMessagePreviewWithMeta.vue';
 import CardPriorityIcon from './CardPriorityIcon.vue';
+import {
+  CONVERSATION_UNREAD_STYLE,
+  getConversationCardStyle,
+} from 'shared/constants/conversationPriorityStyles';
 
 const props = defineProps({
   conversation: {
@@ -57,6 +61,14 @@ const lastActivityAt = computed(() => {
   return timestamp ? shortTimestamp(dynamicTime(timestamp)) : '';
 });
 
+const hasUnread = computed(() => props.conversation?.unreadCount > 0);
+const conversationCardStyle = computed(() =>
+  getConversationCardStyle(props.conversation?.priority, hasUnread.value)
+);
+const unreadTextStyle = computed(() =>
+  hasUnread.value ? { color: CONVERSATION_UNREAD_STYLE.color } : {}
+);
+
 const showMessagePreviewWithoutMeta = computed(() => {
   const { labels = [] } = props.conversation;
   return (
@@ -88,6 +100,7 @@ const onCardClick = e => {
   <div
     role="button"
     class="flex w-full gap-3 px-3 py-4 transition-all duration-300 ease-in-out cursor-pointer"
+    :style="conversationCardStyle"
     @click="onCardClick"
   >
     <Avatar
@@ -99,7 +112,11 @@ const onCardClick = e => {
     />
     <div class="flex flex-col w-full gap-1 min-w-0">
       <div class="flex items-center justify-between h-6 gap-2">
-        <h4 class="text-base font-medium truncate text-n-slate-12">
+        <h4
+          class="text-base truncate text-n-slate-12"
+          :class="hasUnread ? 'font-semibold' : 'font-medium'"
+          :style="unreadTextStyle"
+        >
           {{ currentContactName }}
         </h4>
         <div class="flex items-center gap-2">
@@ -121,6 +138,7 @@ const onCardClick = e => {
       <CardMessagePreview
         v-show="showMessagePreviewWithoutMeta"
         :conversation="conversation"
+        :unread-text-style="unreadTextStyle"
       />
       <CardMessagePreviewWithMeta
         v-show="!showMessagePreviewWithoutMeta"
@@ -128,6 +146,7 @@ const onCardClick = e => {
         :conversation="conversation"
         :contact="contact"
         :account-labels="accountLabels"
+        :unread-text-style="unreadTextStyle"
       />
     </div>
   </div>

@@ -105,6 +105,14 @@ class ActionCableConnector extends BaseActionCableConnector {
 
   onAssigneeChanged = payload => {
     const { id } = payload;
+    this.app.$store
+      .dispatch('handleConversationNewAssignmentAlert', payload)
+      .then(shouldPlayAudio => {
+        if (shouldPlayAudio) {
+          DashboardAudioNotificationHelper.onNewAssignment();
+        }
+      });
+
     if (id) {
       this.app.$store.dispatch('updateConversation', payload);
     }

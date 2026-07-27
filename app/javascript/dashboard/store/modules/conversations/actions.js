@@ -19,6 +19,8 @@ import {
   syncConversationCallVisibility,
 } from 'dashboard/helper/voice';
 
+const NEW_ASSIGNMENT_ALERT_DEBOUNCE_MS = 30000;
+
 export const hasMessageFailedWithExternalError = pendingMessage => {
   // This helper is used to check if the message has failed with an external error.
   // We have two cases
@@ -189,6 +191,56 @@ const actions = {
       conversationId,
       messageId: lastMessage.id,
     });
+  },
+
+  handleConversationNewAssignmentAlert(
+    { commit, state, rootGetters },
+    conversation
+  ) {
+    const assignmentChange = conversation.assignment_change || {};
+    const assigneeId = conversation.meta?.assignee?.id;
+    const currentUserId = rootGetters.getCurrentUserID;
+    const existingConversation = state.allConversations.find(
+      item => item.id === conversation.id
+    );
+    const hasPreviousAssigneeId = Object.prototype.hasOwnProperty.call(
+      assignmentChange,
+      'previous_assignee_id'
+    );
+    const previousAssigneeId = hasPreviousAssigneeId
+      ? assignmentChange.previous_assignee_id
+      : existingConversation?.meta?.assignee?.id ?? null;
+
+    const isAutomaticAssignment = assignmentChange.automatic === true;
+    const wasUnassigned = previousAssigneeId == null;
+    const isAssignedToCurrentUser =
+      Number(assigneeId) === Number(currentUserId);
+
+    if (!isAutomaticAssignment || !wasUnassigned || !isAssignedToCurrentUser) {
+      return false;
+    }
+
+    if (state.selectedChatId === conversation.id) {
+      commit(types.CLEAR_CONVERSATION_NEW_ASSIGNMENT_ALERT, conversation.id);
+      return false;
+    }
+
+    commit(types.SET_CONVERSATION_NEW_ASSIGNMENT_ALERT, conversation.id);
+
+    const now = Date.now();
+    const lastNotifiedAt =
+      state.assignmentAlertLastNotifiedAt[conversation.id] || 0;
+    const shouldPlayAudio =
+      now - lastNotifiedAt > NEW_ASSIGNMENT_ALERT_DEBOUNCE_MS;
+
+    if (shouldPlayAudio) {
+      commit(types.SET_CONVERSATION_ASSIGNMENT_ALERT_NOTIFIED_AT, {
+        conversationId: conversation.id,
+        notifiedAt: now,
+      });
+    }
+
+    return shouldPlayAudio;
   },
 
   async setActiveChat({ commit, dispatch }, { data, after }) {

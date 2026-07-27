@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CONVERSATION_PRIORITY } from 'shared/constants/messages';
+import { getConversationPriorityStyle } from 'shared/constants/conversationPriorityStyles';
 
 import Icon from 'dashboard/components-next/icon/Icon.vue';
 
@@ -38,6 +39,16 @@ const iconName = computed(() => {
   return props.showEmpty ? 'i-woot-priority-empty' : '';
 });
 
+const iconStyle = computed(() => {
+  const { color } = getConversationPriorityStyle(props.priority);
+  return color ? { color } : {};
+});
+
+const badgeStyle = computed(() => {
+  const { backgroundColor } = getConversationPriorityStyle(props.priority);
+  return backgroundColor ? { backgroundColor } : {};
+});
+
 const tooltipContent = computed(() => {
   if (props.priority && priorityLabels[props.priority]) {
     return t(priorityLabels[props.priority]);
@@ -52,12 +63,15 @@ const tooltipContent = computed(() => {
 </script>
 
 <template>
-  <Icon
+  <span
+    v-if="iconName"
     v-tooltip.top="{
       content: tooltipContent,
       delay: { show: 500, hide: 0 },
     }"
-    :icon="iconName"
-    class="size-4 text-n-slate-5"
-  />
+    class="inline-flex items-center justify-center flex-shrink-0 rounded-md size-5 bg-n-alpha-2"
+    :style="badgeStyle"
+  >
+    <Icon :icon="iconName" :style="iconStyle" class="size-3.5 text-n-slate-5" />
+  </span>
 </template>

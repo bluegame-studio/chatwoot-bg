@@ -12,6 +12,10 @@ import UnreadBadge from 'dashboard/components-next/Conversation/ConversationCard
 import SLACardLabel from './components/SLACardLabel.vue';
 import VoiceCallStatus from './VoiceCallStatus.vue';
 import Checkbox from 'dashboard/components-next/checkbox/Checkbox.vue';
+import {
+  CONVERSATION_UNREAD_STYLE,
+  getConversationCardStyle,
+} from 'shared/constants/conversationPriorityStyles';
 
 const props = defineProps({
   chat: { type: Object, required: true },
@@ -20,6 +24,7 @@ const props = defineProps({
   inbox: { type: Object, default: () => ({}) },
   selected: { type: Boolean, default: false },
   isActiveChat: { type: Boolean, default: false },
+  hasNewAssignmentAlert: { type: Boolean, default: false },
   showAssignee: { type: Boolean, default: false },
   showInboxName: { type: Boolean, default: false },
   hideThumbnail: { type: Boolean, default: false },
@@ -38,6 +43,27 @@ const hovered = ref(false);
 const unreadCount = computed(() => props.chat.unread_count);
 const hasUnread = computed(() => unreadCount.value > 0);
 const lastMessageInChat = computed(() => getLastMessage(props.chat));
+const conversationCardStyle = computed(() =>
+  getConversationCardStyle(props.chat.priority, hasUnread.value)
+);
+const newAssignmentAlertTextStyle = computed(() =>
+  props.hasNewAssignmentAlert ? { color: '#B54708' } : {}
+);
+const cardStyle = computed(() =>
+  props.hasNewAssignmentAlert
+    ? {
+        ...conversationCardStyle.value,
+        backgroundColor: '#FFF4E5',
+      }
+    : conversationCardStyle.value
+);
+const unreadTextStyle = computed(() =>
+  props.hasNewAssignmentAlert
+    ? newAssignmentAlertTextStyle.value
+    : hasUnread.value
+      ? { color: CONVERSATION_UNREAD_STYLE.color }
+      : {}
+);
 
 const voiceCallData = computed(() => {
   const last = lastMessageInChat.value;
@@ -51,11 +77,7 @@ const voiceCallData = computed(() => {
 });
 
 const showMetaSection = computed(() => {
-  return (
-    props.showInboxName ||
-    (props.showAssignee && props.assignee.name) ||
-    props.chat.priority
-  );
+  return props.showInboxName || (props.showAssignee && props.assignee.name);
 });
 
 const isAgentBotAssignee = computed(
@@ -72,7 +94,9 @@ const showLabelsSection = computed(() => {
 
 const messagePreviewClass = computed(() => {
   return [
-    hasUnread.value ? 'font-medium text-n-slate-12' : 'text-n-slate-11',
+    hasUnread.value || props.hasNewAssignmentAlert
+      ? 'font-semibold'
+      : 'text-n-slate-11',
     !props.compact && hasUnread.value ? 'ltr:pr-4 rtl:pl-4' : '',
     props.compact && hasUnread.value ? 'ltr:pr-6 rtl:pl-6' : '',
   ];
@@ -117,9 +141,15 @@ watch(
       'px-0': compact,
       'px-3': !compact,
     }"
+    :style="cardStyle"
     @click="$emit('click', $event)"
     @contextmenu="$emit('contextmenu', $event)"
   >
+    <span
+      v-if="hasNewAssignmentAlert"
+      class="absolute top-2 bottom-2 w-1 rounded-full ltr:left-1 rtl:right-1"
+      style="background-color: #f79009"
+    />
     <div
       class="relative"
       @mouseenter="onThumbnailHover"
@@ -174,15 +204,12 @@ watch(
             />
             <span class="truncate">{{ assignee.name }}</span>
           </span>
-          <CardPriorityIcon
-            :priority="chat.priority"
-            class="flex-shrink-0 !size-3.5"
-          />
         </div>
       </div>
       <h4
         class="conversation--user text-sm my-0 mx-2 capitalize pt-0.5 text-ellipsis overflow-hidden whitespace-nowrap flex-1 min-w-0 ltr:pr-16 rtl:pl-16 text-n-slate-12"
-        :class="hasUnread ? 'font-semibold' : 'font-medium'"
+        :class="hasUnread || hasNewAssignmentAlert ? 'font-semibold' : 'font-medium'"
+        :style="unreadTextStyle"
       >
         {{ currentContact.name }}
       </h4>
@@ -199,12 +226,14 @@ watch(
         :message="lastMessageInChat"
         class="my-0 mx-2 leading-6 h-6 flex-1 min-w-0 text-sm"
         :class="messagePreviewClass"
+        :style="unreadTextStyle"
       />
       <p
         v-else
         key="no-messages"
         class="text-n-slate-11 text-sm my-0 mx-2 leading-6 h-6 flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap"
         :class="messagePreviewClass"
+        :style="unreadTextStyle"
       >
         <fluent-icon
           size="16"
@@ -226,6 +255,22 @@ watch(
             :conversation-id="chat.id"
           />
         </span>
+        <span
+          v-if="hasNewAssignmentAlert"
+          class="inline-flex items-center justify-center px-1.5 py-0.5 mt-1 rounded text-[10px] font-semibold leading-3 border"
+          style="
+            color: #b54708;
+            background-color: #fff4e5;
+            border-color: #f79009;
+          "
+        >
+          新分配
+        </span>
+        <CardPriorityIcon
+          v-if="chat.priority"
+          :priority="chat.priority"
+          class="ltr:ml-auto rtl:mr-auto mt-1"
+        />
         <UnreadBadge
           v-if="hasUnread"
           :count="unreadCount"

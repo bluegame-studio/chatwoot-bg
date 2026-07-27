@@ -20,6 +20,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  unreadTextStyle: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const { t } = useI18n();
@@ -67,7 +71,11 @@ defineExpose({
 <template>
   <div class="flex flex-col w-full gap-1">
     <div class="flex items-center justify-between w-full gap-2 py-1 h-7">
-      <p class="mb-0 text-sm leading-7 text-n-slate-12 line-clamp-1">
+      <p
+        class="mb-0 text-sm leading-7 text-n-slate-12 line-clamp-1"
+        :class="{ 'font-semibold': unreadMessagesCount > 0 }"
+        :style="unreadTextStyle"
+      >
         {{ lastNonActivityMessageContent }}
       </p>
 

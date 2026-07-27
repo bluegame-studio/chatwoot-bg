@@ -17,6 +17,7 @@ const NOTIFICATION_TIME = 30000;
 const ALERT_DURATION = 10000;
 const ALERT_PATH_PREFIX = '/audio/dashboard/';
 const DEFAULT_TONE = 'ding';
+const NEW_ASSIGNMENT_TONE = 'ringtone';
 const DEFAULT_ALERT_TYPE = ['none'];
 
 export class DashboardAudioNotificationHelper {
@@ -43,21 +44,32 @@ export class DashboardAudioNotificationHelper {
     this.currentUser = null;
   }
 
-  intializeAudio = () => {
-    const resourceUrl = `${ALERT_PATH_PREFIX}${this.audioConfig.tone}.mp3`;
-    this.audioConfig.audio = new Audio(resourceUrl);
-    return this.audioConfig.audio.load();
+  createAudio = tone => {
+    const alertTone = tone || this.audioConfig.tone;
+    const resourceUrl = `${ALERT_PATH_PREFIX}${alertTone}.mp3`;
+    const audio = new Audio(resourceUrl);
+    audio.preload = 'auto';
+    return audio;
   };
 
-  playAudioAlert = async () => {
+  intializeAudio = () => {
+    this.audioConfig.audio = this.createAudio();
+    this.audioConfig.audio.load();
+    return this.audioConfig.audio;
+  };
+
+  playAudioAlert = async (audio = this.audioConfig.audio) => {
+    const alertAudio = audio || this.intializeAudio();
+
     try {
-      await this.audioConfig.audio.play();
+      alertAudio.currentTime = 0;
+      await alertAudio.play();
     } catch (error) {
       if (
         error.name === 'NotAllowedError' &&
-        !this.hasSentSoundPermissionsRequest
+        !this.audioConfig.hasSentSoundPermissionsRequest
       ) {
-        this.hasSentSoundPermissionsRequest = true;
+        this.audioConfig.hasSentSoundPermissionsRequest = true;
         useAlert(
           'PROFILE_SETTINGS.FORM.AUDIO_NOTIFICATIONS_SECTION.SOUND_PERMISSION_ERROR',
           { usei18n: true, duration: ALERT_DURATION }
@@ -211,6 +223,11 @@ export class DashboardAudioNotificationHelper {
     this.playAudioAlert();
     showBadgeOnFavicon();
     this.playAudioEvery30Seconds();
+  };
+
+  onNewAssignment = () => {
+    this.playAudioAlert(this.createAudio(NEW_ASSIGNMENT_TONE));
+    showBadgeOnFavicon();
   };
 }
 

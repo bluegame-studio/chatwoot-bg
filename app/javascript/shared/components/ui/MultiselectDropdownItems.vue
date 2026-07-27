@@ -83,6 +83,23 @@ export default {
         );
       });
     },
+    optionButtonStyle(option) {
+      const { color, backgroundColor } = option || {};
+      if (!color && !backgroundColor) return {};
+
+      return {
+        ...(color ? { color } : {}),
+        ...(backgroundColor ? { backgroundColor } : {}),
+      };
+    },
+    optionIconStyle(option) {
+      const { color } = option || {};
+      return color ? { color } : {};
+    },
+    optionIconBadgeStyle(option) {
+      const { backgroundColor } = option || {};
+      return backgroundColor ? { backgroundColor } : {};
+    },
   },
 };
 </script>
@@ -112,6 +129,7 @@ export default {
               trailing-icon
               :icon="isActive(option) ? 'i-lucide-check' : ''"
               class="w-full !px-2.5"
+              :style="optionButtonStyle(option)"
               @click="() => onclick(option)"
             >
               <div
@@ -165,11 +183,17 @@ export default {
                   class="size-3.5 !text-sm"
                 />
               </div>
-              <Icon
+              <span
                 v-else-if="option.icon"
-                :icon="option.icon"
-                class="size-5 text-n-slate-11"
-              />
+                class="inline-flex items-center justify-center flex-shrink-0 rounded-md size-6 bg-n-alpha-2"
+                :style="optionIconBadgeStyle(option)"
+              >
+                <Icon
+                  :icon="option.icon"
+                  :style="optionIconStyle(option)"
+                  class="size-4 text-n-slate-11"
+                />
+              </span>
             </NextButton>
           </WootDropdownItem>
         </WootDropdownMenu>
