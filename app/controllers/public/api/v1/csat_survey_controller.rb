@@ -1,6 +1,6 @@
 class Public::Api::V1::CsatSurveyController < PublicController
-  before_action :set_conversation
   before_action :set_message
+  before_action :set_conversation
 
   def show; end
 
@@ -13,13 +13,22 @@ class Public::Api::V1::CsatSurveyController < PublicController
   private
 
   def set_conversation
-    return if params[:id].blank?
-
-    @conversation = Conversation.find_by!(uuid: params[:id])
+    @conversation ||= @message.conversation
   end
 
   def set_message
-    @message = @conversation.messages.find_by!(content_type: 'input_csat')
+    @message = find_message_by_survey_uuid(params[:id]) if params[:id].present?
+    return if @message
+
+    @conversation = Conversation.find_by!(uuid: params[:id])
+    @message ||= @conversation.messages.find_by!(content_type: 'input_csat')
+  end
+
+  def find_message_by_survey_uuid(survey_uuid)
+    sanitized_uuid = ActiveRecord::Base.sanitize_sql_like(survey_uuid)
+    Message.input_csat
+           .where('content_attributes::text LIKE ?', "%#{sanitized_uuid}%")
+           .detect { |message| message.csat_survey_uuid == survey_uuid }
   end
 
   def message_update_params
