@@ -12,6 +12,10 @@ import UnreadBadge from 'dashboard/components-next/Conversation/ConversationCard
 import SLACardLabel from './components/SLACardLabel.vue';
 import VoiceCallStatus from './VoiceCallStatus.vue';
 import Checkbox from 'dashboard/components-next/checkbox/Checkbox.vue';
+import Icon from 'dashboard/components-next/icon/Icon.vue';
+import { useAlert } from 'dashboard/composables';
+import { useI18n } from 'vue-i18n';
+import { copyTextToClipboard } from 'shared/helpers/clipboard';
 import {
   CONVERSATION_UNREAD_STYLE,
   getConversationCardStyle,
@@ -38,11 +42,18 @@ const emit = defineEmits([
   'deSelectConversation',
 ]);
 
+const { t } = useI18n();
 const hovered = ref(false);
 
 const unreadCount = computed(() => props.chat.unread_count);
 const hasUnread = computed(() => unreadCount.value > 0);
 const lastMessageInChat = computed(() => getLastMessage(props.chat));
+const contactDisplayId = computed(
+  () =>
+    props.currentContact?.identifier ||
+    props.currentContact?.id ||
+    props.currentContact?.name
+);
 const conversationCardStyle = computed(() =>
   getConversationCardStyle(props.chat.priority, hasUnread.value)
 );
@@ -122,6 +133,15 @@ const selectedModel = computed({
   get: () => props.selected,
   set: value => onSelectConversation(value),
 });
+
+const copyContactDisplayId = async () => {
+  try {
+    await copyTextToClipboard(String(contactDisplayId.value));
+    useAlert(t('CONTACT_PANEL.COPY_SUCCESSFUL'));
+  } catch (error) {
+    // error
+  }
+};
 
 watch(
   () => props.chat.id,
@@ -206,13 +226,26 @@ watch(
           </span>
         </div>
       </div>
-      <h4
-        class="conversation--user text-sm my-0 mx-2 capitalize pt-0.5 text-ellipsis overflow-hidden whitespace-nowrap flex-1 min-w-0 ltr:pr-16 rtl:pl-16 text-n-slate-12"
-        :class="hasUnread || hasNewAssignmentAlert ? 'font-semibold' : 'font-medium'"
-        :style="unreadTextStyle"
+      <div
+        class="conversation--user flex items-center gap-1 mx-2 pt-0.5 flex-1 min-w-0 ltr:pr-16 rtl:pl-16"
       >
-        {{ currentContact.name }}
-      </h4>
+        <h4
+          class="text-sm my-0 text-ellipsis overflow-hidden whitespace-nowrap min-w-0 text-n-slate-12"
+          :class="
+            hasUnread || hasNewAssignmentAlert ? 'font-semibold' : 'font-medium'
+          "
+          :style="unreadTextStyle"
+        >
+          {{ contactDisplayId }}
+        </h4>
+        <button
+          type="button"
+          class="inline-flex items-center justify-center flex-shrink-0 transition-colors rounded size-5 text-n-slate-10 hover:text-n-slate-12 hover:bg-n-alpha-2"
+          @click.stop.prevent="copyContactDisplayId"
+        >
+          <Icon icon="i-lucide-copy" class="size-3.5" />
+        </button>
+      </div>
       <VoiceCallStatus
         v-if="voiceCallData.status"
         key="voice-status-row"

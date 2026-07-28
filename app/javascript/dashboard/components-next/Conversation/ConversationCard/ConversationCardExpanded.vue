@@ -12,6 +12,9 @@ import SLACardLabel from 'dashboard/components-next/Conversation/Sla/SLACardLabe
 import CardStatusIcon from './CardStatusIcon.vue';
 import Checkbox from 'dashboard/components-next/checkbox/Checkbox.vue';
 import Icon from 'dashboard/components-next/icon/Icon.vue';
+import { useAlert } from 'dashboard/composables';
+import { useI18n } from 'vue-i18n';
+import { copyTextToClipboard } from 'shared/helpers/clipboard';
 
 const props = defineProps({
   chat: { type: Object, required: true },
@@ -33,8 +36,15 @@ const emit = defineEmits([
   'contextmenu',
 ]);
 
+const { t } = useI18n();
 const lastMessageInChat = computed(() => getLastMessage(props.chat));
 const showLabelsSection = computed(() => props.chat.labels?.length > 0);
+const contactDisplayId = computed(
+  () =>
+    props.currentContact?.identifier ||
+    props.currentContact?.id ||
+    props.currentContact?.name
+);
 
 const voiceCallData = computed(() => {
   const last = lastMessageInChat.value;
@@ -67,6 +77,15 @@ const selectedModel = computed({
     }
   },
 });
+
+const copyContactDisplayId = async () => {
+  try {
+    await copyTextToClipboard(String(contactDisplayId.value));
+    useAlert(t('CONTACT_PANEL.COPY_SUCCESSFUL'));
+  } catch (error) {
+    // error
+  }
+};
 </script>
 
 <template>
@@ -163,15 +182,24 @@ const selectedModel = computed({
         :hide-thumbnail="false"
       />
 
-      <h4
-        class="text-heading-3 my-0 capitalize truncate text-n-slate-12 font-medium w-32 flex-shrink-0"
-        :class="{
-          'font-semibold': hasNewAssignmentAlert,
-        }"
-        :style="hasNewAssignmentAlert ? { color: '#B54708' } : {}"
-      >
-        {{ currentContact.name }}
-      </h4>
+      <div class="flex items-center gap-1 w-32 flex-shrink-0 min-w-0">
+        <h4
+          class="text-heading-3 my-0 truncate text-n-slate-12 font-medium min-w-0"
+          :class="{
+            'font-semibold': hasNewAssignmentAlert,
+          }"
+          :style="hasNewAssignmentAlert ? { color: '#B54708' } : {}"
+        >
+          {{ contactDisplayId }}
+        </h4>
+        <button
+          type="button"
+          class="inline-flex items-center justify-center flex-shrink-0 transition-colors rounded size-5 text-n-slate-10 hover:text-n-slate-12 hover:bg-n-alpha-2"
+          @click.stop.prevent="copyContactDisplayId"
+        >
+          <Icon icon="i-lucide-copy" class="size-3.5" />
+        </button>
+      </div>
 
       <CardContent
         :last-message="lastMessageInChat"

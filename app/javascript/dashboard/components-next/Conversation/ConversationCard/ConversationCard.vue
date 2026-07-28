@@ -4,6 +4,9 @@ import { getInboxIconByType } from 'dashboard/helper/inbox';
 import { useRouter, useRoute } from 'vue-router';
 import { frontendURL, conversationUrl } from 'dashboard/helper/URLHelper.js';
 import { dynamicTime, shortTimestamp } from 'shared/helpers/timeHelper';
+import { useAlert } from 'dashboard/composables';
+import { useI18n } from 'vue-i18n';
+import { copyTextToClipboard } from 'shared/helpers/clipboard';
 
 import Icon from 'dashboard/components-next/icon/Icon.vue';
 import Avatar from 'dashboard/components-next/avatar/Avatar.vue';
@@ -36,12 +39,19 @@ const props = defineProps({
 
 const router = useRouter();
 const route = useRoute();
+const { t } = useI18n();
 
 const cardMessagePreviewWithMetaRef = ref(null);
 
 const currentContact = computed(() => props.contact);
 
 const currentContactName = computed(() => currentContact.value?.name);
+const currentContactDisplayId = computed(
+  () =>
+    currentContact.value?.identifier ||
+    currentContact.value?.id ||
+    currentContact.value?.name
+);
 const currentContactThumbnail = computed(() => currentContact.value?.thumbnail);
 const currentContactStatus = computed(
   () => currentContact.value?.availabilityStatus
@@ -94,6 +104,15 @@ const onCardClick = e => {
   }
   router.push({ path });
 };
+
+const copyContactDisplayId = async () => {
+  try {
+    await copyTextToClipboard(String(currentContactDisplayId.value));
+    useAlert(t('CONTACT_PANEL.COPY_SUCCESSFUL'));
+  } catch (error) {
+    // error
+  }
+};
 </script>
 
 <template>
@@ -112,13 +131,22 @@ const onCardClick = e => {
     />
     <div class="flex flex-col w-full gap-1 min-w-0">
       <div class="flex items-center justify-between h-6 gap-2">
-        <h4
-          class="text-base truncate text-n-slate-12"
-          :class="hasUnread ? 'font-semibold' : 'font-medium'"
-          :style="unreadTextStyle"
-        >
-          {{ currentContactName }}
-        </h4>
+        <div class="flex items-center gap-1 min-w-0">
+          <h4
+            class="text-base truncate text-n-slate-12"
+            :class="hasUnread ? 'font-semibold' : 'font-medium'"
+            :style="unreadTextStyle"
+          >
+            {{ currentContactDisplayId }}
+          </h4>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center flex-shrink-0 transition-colors rounded size-5 text-n-slate-10 hover:text-n-slate-12 hover:bg-n-alpha-2"
+            @click.stop.prevent="copyContactDisplayId"
+          >
+            <Icon icon="i-lucide-copy" class="size-3.5" />
+          </button>
+        </div>
         <div class="flex items-center gap-2">
           <CardPriorityIcon :priority="conversation.priority || null" />
           <div
