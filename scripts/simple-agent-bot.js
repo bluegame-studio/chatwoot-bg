@@ -37,7 +37,28 @@ function config() {
     host: process.env.BOT_HOST || fileConfig.BOT_HOST || '127.0.0.1',
     handoffAfter: Number(process.env.HANDOFF_AFTER || fileConfig.HANDOFF_AFTER || 3),
     stateFile: process.env.BOT_STATE_FILE || fileConfig.BOT_STATE_FILE || DEFAULT_STATE_FILE,
+    interactiveMessage:
+      process.env.BOT_INTERACTIVE_MESSAGE ||
+      fileConfig.BOT_INTERACTIVE_MESSAGE ||
+      '你好，我是智能助手。请选择你需要的服务：',
+    interactiveOptions: parseInteractiveOptions(
+      process.env.BOT_INTERACTIVE_OPTIONS || fileConfig.BOT_INTERACTIVE_OPTIONS
+    ),
   };
+}
+
+function parseInteractiveOptions(rawOptions) {
+  if (!rawOptions) {
+    return [
+      { title: '咨询订单', value: 'order' },
+      { title: '转人工客服', value: 'agent' },
+    ];
+  }
+
+  return rawOptions.split(',').map(option => {
+    const [title, value] = option.split(':').map(part => part.trim());
+    return { title, value: value || title };
+  });
 }
 
 function loadState(stateFile) {
@@ -103,6 +124,22 @@ async function sendReply(configValue, conversationId, content) {
   );
 }
 
+async function sendInteractiveReply(configValue, conversationId) {
+  await chatwootRequest(
+    configValue,
+    `/api/v1/accounts/${configValue.accountId}/conversations/${conversationId}/messages`,
+    {
+      content: configValue.interactiveMessage,
+      message_type: 'outgoing',
+      private: false,
+      content_type: 'input_select',
+      content_attributes: {
+        items: configValue.interactiveOptions,
+      },
+    }
+  );
+}
+
 async function handoffToAgent(configValue, conversationId) {
   await chatwootRequest(
     configValue,
@@ -123,7 +160,12 @@ async function handlePayload(payload, deliveryId) {
   if (deliveryId) state.deliveries[deliveryId] = Date.now();
 
   if (payload.event === 'conversation_resolved') {
-    delete state.conversations[payload.id];
+    state.conversations[payload.id] = {
+      incomingCount: 0,
+      handedOff: false,
+      interactiveSent: false,
+      waitingForNewRound: true,
+    };
     saveState(configValue.stateFile, state);
     return { ok: true, reset: payload.id };
   }
@@ -136,12 +178,32 @@ async function handlePayload(payload, deliveryId) {
   const conversationId = payload.conversation?.id;
   if (!conversationId) throw new Error('Missing conversation id in webhook payload.');
 
-  const current = state.conversations[conversationId] || { incomingCount: 0, handedOff: false };
+  const current = state.conversations[conversationId] || {
+    incomingCount: 0,
+    handedOff: false,
+    interactiveSent: false,
+    waitingForNewRound: false,
+  };
+
+  if (current.waitingForNewRound || (current.handedOff && payload.conversation?.status === 'pending')) {
+    current.incomingCount = 0;
+    current.handedOff = false;
+    current.interactiveSent = false;
+    current.waitingForNewRound = false;
+  }
+
   current.incomingCount += 1;
   state.conversations[conversationId] = current;
   saveState(configValue.stateFile, state);
 
   if (current.handedOff) return { skipped: 'already handed off' };
+
+  if (!current.interactiveSent) {
+    current.interactiveSent = true;
+    saveState(configValue.stateFile, state);
+    await sendInteractiveReply(configValue, conversationId);
+    return { ok: true, replied: true, interactive: true, incomingCount: current.incomingCount };
+  }
 
   if (current.incomingCount <= configValue.handoffAfter) {
     await sendReply(configValue, conversationId, `我收到啦，这是第 ${current.incomingCount} 条消息。我先帮你处理。`);
@@ -176,10 +238,12 @@ const server = http.createServer((request, response) => {
         return;
       }
 
-      const result = await handlePayload(JSON.parse(rawBody), request.headers['x-chatwoot-delivery']);
-      console.log('[bot]', result);
       response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify(result));
+      response.end(JSON.stringify({ ok: true, accepted: true }));
+
+      handlePayload(JSON.parse(rawBody), request.headers['x-chatwoot-delivery'])
+        .then(result => console.log('[bot]', result))
+        .catch(error => console.error('[bot]', error));
     } catch (error) {
       console.error('[bot]', error);
       response.writeHead(500, { 'Content-Type': 'application/json' });
