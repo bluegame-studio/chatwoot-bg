@@ -110,8 +110,7 @@ class Message < ApplicationRecord
   # [:data] : Used for structured content types such as voice_call
   store :content_attributes, accessors: [:submitted_email, :items, :submitted_values, :email, :in_reply_to, :deleted,
                                          :external_created_at, :story_sender, :story_id, :external_error,
-                                         :translations, :in_reply_to_external_id, :is_unsupported, :data,
-                                         :csat_survey_uuid], coder: JSON
+                                         :translations, :in_reply_to_external_id, :is_unsupported, :data], coder: JSON
 
   store :external_source_ids, accessors: [:slack], coder: JSON, prefix: :external_source_id
 
@@ -201,11 +200,6 @@ class Message < ApplicationRecord
   # Method to get content with survey URL for outgoing channel delivery
   def outgoing_content
     MessageContentPresenter.new(self).outgoing_content
-  end
-
-  def csat_survey_link
-    survey_id = csat_survey_uuid.presence || conversation.uuid
-    "#{ENV.fetch('FRONTEND_URL', nil)}/survey/responses/#{survey_id}"
   end
 
   # Raw content with survey URL (no markdown rendering) for webhook consumers

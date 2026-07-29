@@ -1,5 +1,6 @@
 import {
   createConversationAPI,
+  getConversationAPI,
   sendMessageAPI,
   getMessagesAPI,
   sendAttachmentAPI,
@@ -13,10 +14,28 @@ import {
 import { ON_CONVERSATION_CREATED } from 'widget/constants/widgetBusEvents';
 import { createTemporaryMessage, getNonDeletedMessages } from './helpers';
 import { emitter } from 'shared/helpers/mitt';
+
+const UNRESOLVED_CONVERSATION_STATUSES = ['open', 'pending'];
+
 export const actions = {
   createConversation: async ({ commit, dispatch }, params) => {
     commit('setConversationUIFlag', { isCreating: true });
     try {
+      const { data: existingConversation = {} } = await getConversationAPI();
+      if (
+        UNRESOLVED_CONVERSATION_STATUSES.includes(existingConversation.status)
+      ) {
+        dispatch('conversationAttributes/update', existingConversation, {
+          root: true,
+        });
+        await dispatch('fetchOldConversations');
+        if (params.message) {
+          await dispatch('sendMessage', { content: params.message });
+        }
+        emitter.emit(ON_CONVERSATION_CREATED);
+        return;
+      }
+
       const { data } = await createConversationAPI(params);
       const { messages } = data;
       const [message = {}] = messages;
@@ -34,7 +53,7 @@ export const actions = {
     const { content, replyTo } = params;
     const message = createTemporaryMessage({ content, replyTo });
     const { pendingCustomAttributes, pendingLabels } = conversationState;
-    dispatch('sendMessageWithData', {
+    return dispatch('sendMessageWithData', {
       message,
       pendingCustomAttributes,
       pendingLabels,

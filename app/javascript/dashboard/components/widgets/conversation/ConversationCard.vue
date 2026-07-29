@@ -43,6 +43,8 @@ const emit = defineEmits([
 
 const { t } = useI18n();
 const hovered = ref(false);
+const activeChatClass =
+  "active animate-card-select bg-n-alpha-1 dark:bg-n-alpha-3 !border-n-surface-1 before:!content-[none] after:content-[''] after:absolute ltr:after:left-2 rtl:after:right-2 after:top-3 after:bottom-3 after:w-1 after:rounded-full after:bg-n-brand after:pointer-events-none z-[2]";
 
 const unreadCount = computed(() => props.chat.unread_count);
 const hasUnread = computed(() => unreadCount.value > 0);
@@ -154,11 +156,10 @@ watch(
   <div
     class="relative flex items-start flex-grow-0 flex-shrink-0 w-auto max-w-full py-0 cursor-pointer conversation border-b border-n-slate-3 hover:border-n-surface-1 hover:bg-n-alpha-1 dark:hover:bg-n-alpha-3 group hover:z-[1] before:content-[none] before:absolute before:-top-px before:inset-x-0 before:h-px before:bg-n-surface-1 before:pointer-events-none hover:before:content-['']"
     :class="{
-      'active animate-card-select bg-n-background !border-n-surface-1':
-        isActiveChat,
+      [activeChatClass]: isActiveChat,
       'selected bg-n-slate-2 !border-n-surface-1': selected,
       'px-0': compact,
-      'px-3': !compact,
+      'px-5': !compact,
     }"
     :style="cardStyle"
     @click="$emit('click', $event)"

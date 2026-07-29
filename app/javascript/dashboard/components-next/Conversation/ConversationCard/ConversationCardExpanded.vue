@@ -37,6 +37,8 @@ const emit = defineEmits([
 ]);
 
 const { t } = useI18n();
+const activeChatClass =
+  "active animate-card-select bg-n-alpha-1 dark:bg-n-alpha-3 !border-n-surface-1 before:!content-[none] after:content-[''] after:absolute ltr:after:left-2 rtl:after:right-2 after:top-2.5 after:bottom-2.5 after:w-1 after:rounded-full after:bg-n-brand after:pointer-events-none z-[2]";
 const lastMessageInChat = computed(() => getLastMessage(props.chat));
 const showLabelsSection = computed(() => props.chat.labels?.length > 0);
 const contactDisplayId = computed(
@@ -92,8 +94,7 @@ const copyContactDisplayId = async () => {
   <div
     class="conversation relative cursor-pointer group grid gap-4 items-center px-3 h-12 border-b border-n-slate-3 hover:border-n-surface-1 hover:z-[1] before:content-[none] before:absolute before:-top-px before:inset-x-0 before:h-px before:bg-n-surface-1 before:pointer-events-none hover:before:content-['']"
     :class="{
-      'active animate-card-select bg-n-alpha-1 dark:bg-n-alpha-3 !border-n-surface-1':
-        isActiveChat,
+      [activeChatClass]: isActiveChat,
       'selected bg-n-slate-2 dark:bg-n-slate-3 !border-n-surface-1': selected,
       'hover:bg-n-alpha-1': !isActiveChat && !selected,
       'grid-cols-[minmax(0,2fr)_minmax(0,1fr)]': showLabelsSection,

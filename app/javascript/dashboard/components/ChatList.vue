@@ -317,6 +317,29 @@ function sortByUnreadStatus(conversations) {
   });
 }
 
+function conversationContactKey(conversation) {
+  return conversation.meta?.sender?.id || `conversation-${conversation.id}`;
+}
+
+function compactConversationsByContact(conversations) {
+  const visibleConversationsByContact = new Map();
+
+  conversations.forEach(conversation => {
+    const key = conversationContactKey(conversation);
+    const currentConversation = visibleConversationsByContact.get(key);
+    const currentLastActivityAt =
+      currentConversation?.last_activity_at || currentConversation?.created_at || 0;
+    const conversationLastActivityAt =
+      conversation.last_activity_at || conversation.created_at || 0;
+
+    if (!currentConversation || conversationLastActivityAt > currentLastActivityAt) {
+      visibleConversationsByContact.set(key, conversation);
+    }
+  });
+
+  return [...visibleConversationsByContact.values()];
+}
+
 const conversationList = computed(() => {
   let localConversationList = [];
 
@@ -353,7 +376,7 @@ const conversationList = computed(() => {
     localConversationList = sortByUnreadStatus(localConversationList);
   }
 
-  return localConversationList;
+  return compactConversationsByContact(localConversationList);
 });
 
 const showEndOfListMessage = computed(() => {

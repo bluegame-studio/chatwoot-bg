@@ -20,7 +20,7 @@ class CsatSurveyService
   delegate :inbox, :contact, to: :conversation
 
   def should_send_csat_survey?
-    conversation_allows_csat? && csat_enabled? && csat_allowed_by_survey_rules?
+    conversation_allows_csat? && csat_enabled? && !csat_already_sent? && csat_allowed_by_survey_rules?
   end
 
   def conversation_allows_csat?
@@ -29,6 +29,10 @@ class CsatSurveyService
 
   def csat_enabled?
     inbox.csat_survey_enabled?
+  end
+
+  def csat_already_sent?
+    conversation.messages.where(content_type: :input_csat).present?
   end
 
   def within_messaging_window?
@@ -105,8 +109,8 @@ class CsatSurveyService
     template_name = template_config['name'] || CsatTemplateNameService.csat_template_name(inbox.id)
 
     phone_number = conversation.contact_inbox.source_id
+    template_info = build_template_info(template_name, template_config)
     message = build_csat_message
-    template_info = build_template_info(template_name, template_config, message.csat_survey_uuid)
 
     message_id = inbox.channel.provider_service.send_template(phone_number, template_info, message)
 
@@ -115,7 +119,7 @@ class CsatSurveyService
     Rails.logger.error "Error sending WhatsApp CSAT template for conversation #{conversation.id}: #{e.message}"
   end
 
-  def build_template_info(template_name, template_config, survey_uuid)
+  def build_template_info(template_name, template_config)
     {
       name: template_name,
       lang_code: template_config['language'] || 'en',
@@ -124,7 +128,7 @@ class CsatSurveyService
           type: 'button',
           sub_type: 'url',
           index: '0',
-          parameters: [{ type: 'text', text: survey_uuid }]
+          parameters: [{ type: 'text', text: conversation.uuid }]
         }
       ]
     }
@@ -136,8 +140,7 @@ class CsatSurveyService
       inbox: inbox,
       message_type: :outgoing,
       content: inbox.csat_config&.dig('message') || 'Please rate this conversation',
-      content_type: :input_csat,
-      content_attributes: { csat_survey_uuid: SecureRandom.uuid }
+      content_type: :input_csat
     )
   end
 
@@ -150,8 +153,8 @@ class CsatSurveyService
     content_sid = template_config['content_sid']
 
     phone_number = conversation.contact_inbox.source_id
+    content_variables = { '1' => conversation.uuid }
     message = build_csat_message
-    content_variables = { '1' => message.csat_survey_uuid }
 
     send_service = Twilio::SendOnTwilioService.new(message: message)
     result = send_service.send_csat_template_message(

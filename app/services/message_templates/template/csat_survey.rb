@@ -34,8 +34,7 @@ class MessageTemplates::Template::CsatSurvey
 
   def content_attributes
     {
-      display_type: csat_config['display_type'] || 'emoji',
-      csat_survey_uuid: SecureRandom.uuid
+      display_type: csat_config['display_type'] || 'emoji'
     }
   end
 end
