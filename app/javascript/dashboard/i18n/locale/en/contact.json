@@ -5,6 +5,13 @@
     "PHONE_NUMBER": "Phone number",
     "IDENTIFIER": "Identifier",
     "COPY_SUCCESSFUL": "Copied to clipboard successfully",
+    "FACEBOOK_IDENTITY": {
+      "TITLE": "Facebook identity",
+      "NAME": "Facebook name",
+      "PAGE_ID": "Page ID",
+      "PSID": "PSID",
+      "COPY": "Copy"
+    },
     "COMPANY": "Company",
     "LOCATION": "Location",
     "BROWSER_LANGUAGE": "Browser Language",

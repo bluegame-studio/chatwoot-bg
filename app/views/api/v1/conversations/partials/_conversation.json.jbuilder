@@ -38,6 +38,13 @@ end
 
 json.account_id conversation.account_id
 json.uuid conversation.uuid
+if conversation.inbox.facebook?
+  json.contact_inbox do
+    json.source_name conversation.contact_inbox&.source_name
+    json.source_id conversation.contact_inbox&.source_id
+    json.page_id conversation.inbox.channel.page_id
+  end
+end
 json.additional_attributes conversation.additional_attributes
 json.agent_last_seen_at conversation.agent_last_seen_at.to_i
 json.assignee_last_seen_at conversation.assignee_last_seen_at.to_i

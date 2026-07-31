@@ -1,6 +1,9 @@
 <script setup>
 import { computed, useTemplateRef } from 'vue';
-import { getLastMessage } from 'dashboard/helper/conversationHelper';
+import {
+  getContactDisplayIdentifier,
+  getLastMessage,
+} from 'dashboard/helper/conversationHelper';
 import CardAvatar from './CardAvatar.vue';
 import CardContent from './CardContent.vue';
 import CardLabels from './CardLabelsV5.vue';
@@ -41,11 +44,12 @@ const activeChatClass =
   "active animate-card-select bg-n-alpha-1 dark:bg-n-alpha-3 !border-n-surface-1 before:!content-[none] after:content-[''] after:absolute ltr:after:left-2 rtl:after:right-2 after:top-2.5 after:bottom-2.5 after:w-1 after:rounded-full after:bg-n-brand after:pointer-events-none z-[2]";
 const lastMessageInChat = computed(() => getLastMessage(props.chat));
 const showLabelsSection = computed(() => props.chat.labels?.length > 0);
-const contactDisplayId = computed(
-  () =>
-    props.currentContact?.identifier ||
-    props.currentContact?.id ||
-    props.currentContact?.name
+const contactDisplayId = computed(() =>
+  getContactDisplayIdentifier({
+    contact: props.currentContact,
+    conversation: props.chat,
+    inbox: props.inbox,
+  })
 );
 
 const voiceCallData = computed(() => {

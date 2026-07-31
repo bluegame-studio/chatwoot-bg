@@ -1,6 +1,9 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { getLastMessage } from 'dashboard/helper/conversationHelper';
+import {
+  getContactDisplayIdentifier,
+  getLastMessage,
+} from 'dashboard/helper/conversationHelper';
 import Avatar from 'next/avatar/Avatar.vue';
 import Icon from 'dashboard/components-next/icon/Icon.vue';
 import MessagePreview from './MessagePreview.vue';
@@ -49,11 +52,12 @@ const activeChatClass =
 const unreadCount = computed(() => props.chat.unread_count);
 const hasUnread = computed(() => unreadCount.value > 0);
 const lastMessageInChat = computed(() => getLastMessage(props.chat));
-const contactDisplayId = computed(
-  () =>
-    props.currentContact?.identifier ||
-    props.currentContact?.id ||
-    props.currentContact?.name
+const contactDisplayId = computed(() =>
+  getContactDisplayIdentifier({
+    contact: props.currentContact,
+    conversation: props.chat,
+    inbox: props.inbox,
+  })
 );
 const conversationCardStyle = computed(() =>
   getConversationCardStyle(props.chat.priority, hasUnread.value)

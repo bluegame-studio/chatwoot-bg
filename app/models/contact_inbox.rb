@@ -10,6 +10,7 @@
 #  contact_id    :bigint
 #  inbox_id      :bigint
 #  source_id     :text             not null
+#  source_name   :string
 #
 # Indexes
 #

@@ -40,6 +40,7 @@ import DyteBubble from './bubbles/Dyte.vue';
 import LocationBubble from './bubbles/Location.vue';
 import CSATBubble from './bubbles/CSAT.vue';
 import FormBubble from './bubbles/Form.vue';
+import CardsBubble from './bubbles/Cards.vue';
 import VoiceCallBubble from './bubbles/VoiceCall.vue';
 
 import MessageError from './MessageError.vue';
@@ -300,6 +301,10 @@ const componentToRender = computed(() => {
     return CSATBubble;
   }
 
+  if (props.contentType === CONTENT_TYPES.CARDS) {
+    return CardsBubble;
+  }
+
   if (
     [CONTENT_TYPES.INPUT_SELECT, CONTENT_TYPES.FORM].includes(props.contentType)
   ) {
@@ -377,6 +382,7 @@ const payloadForContextMenu = computed(() => {
 const contextMenuEnabledOptions = computed(() => {
   const hasText = !!props.content;
   const hasAttachments = !!(props.attachments && props.attachments.length > 0);
+  const hasStructuredContent = props.contentType === CONTENT_TYPES.CARDS;
 
   const isOutgoing = props.messageType === MESSAGE_TYPES.OUTGOING;
   const isFailedOrProcessing =
@@ -386,7 +392,7 @@ const contextMenuEnabledOptions = computed(() => {
   return {
     copy: hasText,
     delete:
-      (hasText || hasAttachments) &&
+      (hasText || hasAttachments || hasStructuredContent) &&
       !isFailedOrProcessing &&
       !isMessageDeleted.value,
     cannedResponse: isOutgoing && hasText && !isMessageDeleted.value,
@@ -409,6 +415,7 @@ const shouldRenderMessage = computed(() => {
   const isUnsupported = props.contentAttributes?.isUnsupported;
   const isAnIntegrationMessage =
     props.contentType === CONTENT_TYPES.INTEGRATIONS;
+  const isCardsContentType = props.contentType === CONTENT_TYPES.CARDS;
   const isFailedMessage = props.status === MESSAGE_STATUS.FAILED;
   const hasExternalError = !!props.contentAttributes?.externalError;
 
@@ -416,6 +423,7 @@ const shouldRenderMessage = computed(() => {
     hasAttachments ||
     props.content ||
     isEmailContentType ||
+    isCardsContentType ||
     isUnsupported ||
     isAnIntegrationMessage ||
     isFailedMessage ||

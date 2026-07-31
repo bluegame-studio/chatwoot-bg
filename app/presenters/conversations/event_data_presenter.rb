@@ -4,7 +4,7 @@ class Conversations::EventDataPresenter < SimpleDelegator
       additional_attributes: additional_attributes,
       can_reply: can_reply?,
       channel: inbox.try(:channel_type),
-      contact_inbox: contact_inbox,
+      contact_inbox: push_contact_inbox,
       id: display_id,
       inbox_id: inbox_id,
       messages: push_messages,
@@ -33,6 +33,12 @@ class Conversations::EventDataPresenter < SimpleDelegator
 
   def push_messages
     [messages.where(account_id: account_id).chat.last&.push_event_data].compact
+  end
+
+  def push_contact_inbox
+    return contact_inbox unless inbox.facebook? && contact_inbox
+
+    contact_inbox.as_json.merge('page_id' => inbox.channel.page_id)
   end
 
   def webhook_push_messages

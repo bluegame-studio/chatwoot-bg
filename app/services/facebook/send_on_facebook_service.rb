@@ -6,7 +6,11 @@ class Facebook::SendOnFacebookService < Base::SendOnChannelService
   end
 
   def perform_reply
-    send_message_to_facebook fb_text_message_params if message.content.present?
+    if card_message?
+      send_message_to_facebook fb_card_message_params
+    elsif message.content.present?
+      send_message_to_facebook fb_text_message_params
+    end
 
     if message.attachments.present?
       message.attachments.each do |attachment|
@@ -68,6 +72,43 @@ class Facebook::SendOnFacebookService < Base::SendOnChannelService
     else
       { text: message.outgoing_content }
     end
+  end
+
+  def card_message?
+    message.content_type == 'cards' && message.content_attributes['items'].any?
+  end
+
+  def fb_card_message_params
+    params = {
+      recipient: { id: contact.get_source_id(inbox.id) },
+      message: {
+        attachment: {
+          type: 'template',
+          payload: {
+            template_type: 'generic',
+            elements: message.content_attributes['items'].map { |item| fb_card_element(item) }
+          }
+        }
+      }
+    }
+
+    merge_human_agent_tag(params)
+  end
+
+  def fb_card_element(item)
+    {
+      title: item['title'],
+      subtitle: item['description'],
+      image_url: item['media_url'],
+      buttons: item['actions'].map { |action| fb_card_button(action) }
+    }.compact
+  end
+
+  def fb_card_button(action)
+    return { type: 'web_url', title: action['text'], url: action['uri'] } if action['type'] == 'link'
+    return { type: 'postback', title: action['text'], payload: action['payload'] } if action['type'] == 'postback'
+
+    raise ArgumentError, "Unsupported Facebook card action type: #{action['type']}"
   end
 
   def external_error(response)

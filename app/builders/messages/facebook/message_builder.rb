@@ -37,11 +37,15 @@ class Messages::Facebook::MessageBuilder < Messages::Messenger::MessageBuilder
   private
 
   def build_contact_inbox
+    attributes = contact_params
     @contact_inbox = ::ContactInboxWithContactBuilder.new(
       source_id: @sender_id,
       inbox: @inbox,
-      contact_attributes: contact_params
+      contact_attributes: attributes
     ).perform
+
+    source_name = attributes[:source_name]
+    @contact_inbox.update!(source_name: source_name) if source_name.present? && @contact_inbox.source_name != source_name
   end
 
   def build_message
@@ -132,14 +136,6 @@ class Messages::Facebook::MessageBuilder < Messages::Messenger::MessageBuilder
     }
   end
 
-  def process_contact_params_result(result)
-    {
-      name: "#{result['first_name'] || 'John'} #{result['last_name'] || 'Doe'}",
-      account_id: @inbox.account_id,
-      avatar_url: result['profile_pic']
-    }
-  end
-
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength
   def contact_params
@@ -168,4 +164,15 @@ class Messages::Facebook::MessageBuilder < Messages::Messenger::MessageBuilder
   end
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/MethodLength
+
+  def process_contact_params_result(result)
+    source_name = [result['first_name'], result['last_name']].compact_blank.join(' ').presence || result['name'].presence
+
+    {
+      name: source_name || 'John Doe',
+      source_name: source_name,
+      account_id: @inbox.account_id,
+      avatar_url: result['profile_pic']
+    }
+  end
 end

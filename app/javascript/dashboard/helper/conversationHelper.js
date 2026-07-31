@@ -1,3 +1,5 @@
+import { INBOX_TYPES } from './inbox';
+
 /**
  * Determines the last non-activity message between store and API messages.
  * @param {Object} messageInStore - The last non-activity message from the store.
@@ -14,6 +16,32 @@ const getLastNonActivityMessage = (messageInStore, messageFromAPI) => {
   }
   // Otherwise, return whichever is available
   return messageInStore || messageFromAPI;
+};
+
+export const getContactDisplayIdentifier = ({
+  contact = {},
+  conversation = {},
+  inbox = {},
+}) => {
+  const channelType =
+    conversation.meta?.channel ||
+    conversation.channel ||
+    inbox.channel_type ||
+    inbox.channelType;
+
+  if (channelType === INBOX_TYPES.FB) {
+    const contactInbox =
+      conversation.contact_inbox || conversation.contactInbox || {};
+
+    return (
+      contact.identifier ||
+      contactInbox.source_name ||
+      contactInbox.sourceName ||
+      contact.name
+    );
+  }
+
+  return contact.identifier || contact.id || contact.name;
 };
 
 /**

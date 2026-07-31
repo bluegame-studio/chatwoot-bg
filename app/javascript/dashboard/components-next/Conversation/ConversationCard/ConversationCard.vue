@@ -7,6 +7,7 @@ import { dynamicTime, shortTimestamp } from 'shared/helpers/timeHelper';
 import { useAlert } from 'dashboard/composables';
 import { useI18n } from 'vue-i18n';
 import { copyTextToClipboard } from 'shared/helpers/clipboard';
+import { getContactDisplayIdentifier } from 'dashboard/helper/conversationHelper';
 
 import Icon from 'dashboard/components-next/icon/Icon.vue';
 import Avatar from 'dashboard/components-next/avatar/Avatar.vue';
@@ -46,11 +47,12 @@ const cardMessagePreviewWithMetaRef = ref(null);
 const currentContact = computed(() => props.contact);
 
 const currentContactName = computed(() => currentContact.value?.name);
-const currentContactDisplayId = computed(
-  () =>
-    currentContact.value?.identifier ||
-    currentContact.value?.id ||
-    currentContact.value?.name
+const currentContactDisplayId = computed(() =>
+  getContactDisplayIdentifier({
+    contact: currentContact.value,
+    conversation: props.conversation,
+    inbox: props.stateInbox,
+  })
 );
 const currentContactThumbnail = computed(() => currentContact.value?.thumbnail);
 const currentContactStatus = computed(

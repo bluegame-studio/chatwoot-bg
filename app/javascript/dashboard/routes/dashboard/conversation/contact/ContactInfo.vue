@@ -6,6 +6,7 @@ import {
   ExceptionWithMessage,
 } from 'shared/helpers/CustomErrors';
 import { dynamicTime } from 'shared/helpers/timeHelper';
+import { copyTextToClipboard } from 'shared/helpers/clipboard';
 import { useAdmin } from 'dashboard/composables/useAdmin';
 import ContactInfoRow from './ContactInfoRow.vue';
 import Avatar from 'next/avatar/Avatar.vue';
@@ -95,6 +96,33 @@ export default {
         telegram,
       };
     },
+    facebookIdentity() {
+      const channel = this.currentChat.meta?.channel || this.currentChat.channel;
+      if (channel !== 'Channel::FacebookPage') return null;
+
+      return this.currentChat.contact_inbox || null;
+    },
+    facebookIdentityFields() {
+      if (!this.facebookIdentity) return [];
+
+      return [
+        {
+          key: 'source_name',
+          label: this.$t('CONTACT_PANEL.FACEBOOK_IDENTITY.NAME'),
+          value: this.facebookIdentity.source_name,
+        },
+        {
+          key: 'page_id',
+          label: this.$t('CONTACT_PANEL.FACEBOOK_IDENTITY.PAGE_ID'),
+          value: this.facebookIdentity.page_id,
+        },
+        {
+          key: 'source_id',
+          label: this.$t('CONTACT_PANEL.FACEBOOK_IDENTITY.PSID'),
+          value: this.facebookIdentity.source_id,
+        },
+      ];
+    },
   },
   watch: {
     'contact.id': {
@@ -106,6 +134,10 @@ export default {
   },
   methods: {
     dynamicTime,
+    async copyFacebookIdentity(value) {
+      await copyTextToClipboard(String(value));
+      useAlert(this.$t('CONTACT_PANEL.COPY_SUCCESSFUL'));
+    },
     toggleEditModal() {
       this.showEditModal = !this.showEditModal;
     },
@@ -290,6 +322,40 @@ export default {
             :title="$t('CONTACT_PANEL.LOCATION')"
           />
           <SocialIcons :social-profiles="socialProfiles" />
+          <div
+            v-if="facebookIdentity"
+            class="flex flex-col w-full gap-2 pt-3 mt-1 border-t border-n-weak"
+          >
+            <p class="m-0 text-xs font-medium text-n-slate-12">
+              {{ $t('CONTACT_PANEL.FACEBOOK_IDENTITY.TITLE') }}
+            </p>
+            <dl class="flex flex-col w-full gap-1.5 m-0">
+              <div
+                v-for="field in facebookIdentityFields"
+                :key="field.key"
+                class="grid grid-cols-[88px_minmax(0,1fr)_28px] items-center min-h-7 gap-2"
+              >
+                <dt class="text-xs text-n-slate-10">
+                  {{ field.label }}
+                </dt>
+                <dd
+                  class="min-w-0 m-0 overflow-hidden text-xs text-n-slate-11 whitespace-nowrap text-ellipsis"
+                  :title="field.value || $t('CONTACT_PANEL.NOT_AVAILABLE')"
+                >
+                  {{ field.value || $t('CONTACT_PANEL.NOT_AVAILABLE') }}
+                </dd>
+                <NextButton
+                  v-if="field.value"
+                  v-tooltip.top="$t('CONTACT_PANEL.FACEBOOK_IDENTITY.COPY')"
+                  ghost
+                  xs
+                  slate
+                  icon="i-lucide-copy"
+                  @click="copyFacebookIdentity(field.value)"
+                />
+              </div>
+            </dl>
+          </div>
         </div>
       </div>
       <div class="flex items-center w-full mt-0.5 gap-2">
