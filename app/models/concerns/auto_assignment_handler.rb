@@ -3,47 +3,56 @@ module AutoAssignmentHandler
   include Events::Types
 
   included do
-    after_save :run_auto_assignment
+    after_commit :run_auto_assignment
   end
 
   private
 
   def run_auto_assignment
-    # Assignment V2: Also trigger assignment when conversation is resolved or snoozed,
-    # bypassing the open-only condition so the AssignmentJob can redistribute capacity.
-    return unless conversation_status_changed_to_open? || conversation_status_changed_to_resolved_or_snoozed?
-    return unless should_run_auto_assignment?
-
     if inbox.auto_assignment_v2_enabled?
-      # Coalesces bursts of triggers per inbox. Fine if the job runs even when the
-      # surrounding save rolls back: it only scans the inbox's current unassigned
-      # conversations, so running it for an uncommitted change is harmless.
-      AutoAssignment::AssignmentJob.enqueue_for_inbox(inbox.id)
+      return unless v2_assignment_trigger?
     else
-      # Use legacy assignment system
-      # If conversation has a team, only consider team members for assignment
-      allowed_agent_ids = team_id.present? ? team_member_ids_with_capacity : inbox.member_ids_with_assignment_capacity
-      AutoAssignment::AgentAssignmentService.new(conversation: self, allowed_agent_ids: allowed_agent_ids).perform
+      return unless legacy_assignment_trigger?
     end
+
+    AutoAssignment::AssignmentJob.enqueue_for_inbox(inbox.id)
+  end
+
+  def v2_assignment_trigger?
+    return false unless inbox.enable_auto_assignment?
+    return true if conversation_status_changed_to_resolved_or_snoozed?
+
+    conversation_status_changed_to_open? && unassigned_or_ineligible_assignee?
+  end
+
+  def legacy_assignment_trigger?
+    return false unless legacy_assignment_enabled?
+    return true if legacy_capacity_released?
+
+    conversation_status_changed_to_open? && unassigned_or_ineligible_assignee?
+  end
+
+  def legacy_assignment_enabled?
+    inbox.enable_auto_assignment? && inbox.auto_assignment_config['max_assignment_limit'].to_i.positive?
+  end
+
+  def legacy_capacity_released?
+    open_status_released? || previous_assignee_released?
+  end
+
+  def open_status_released?
+    saved_change_to_status? && status_before_last_save == 'open' && !open?
+  end
+
+  def previous_assignee_released?
+    saved_change_to_assignee_id? && assignee_id_before_last_save.present?
   end
 
   def conversation_status_changed_to_resolved_or_snoozed?
-    inbox.auto_assignment_v2_enabled? && saved_change_to_status? && (resolved? || snoozed?)
+    saved_change_to_status? && (resolved? || snoozed?)
   end
 
-  def team_member_ids_with_capacity
-    return [] if team.blank? || team.allow_auto_assign.blank?
-
-    inbox.member_ids_with_assignment_capacity & team.members.ids
-  end
-
-  def should_run_auto_assignment?
-    return false unless inbox.enable_auto_assignment?
-    # Assignment V2: Resolved/snoozed conversations still have an assignee, so bypass the
-    # assignee-blank check below. The AssignmentJob needs to run to rebalance assignments.
-    return true if conversation_status_changed_to_resolved_or_snoozed?
-
-    # run only if assignee is blank or doesn't have access to inbox
+  def unassigned_or_ineligible_assignee?
     assignee.blank? || inbox.members.exclude?(assignee)
   end
 end
