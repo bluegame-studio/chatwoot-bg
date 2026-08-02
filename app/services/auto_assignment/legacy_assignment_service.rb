@@ -2,13 +2,19 @@ class AutoAssignment::LegacyAssignmentService
   DEFAULT_BATCH_SIZE = 100
 
   pattr_initialize [:inbox!]
+  attr_reader :assigned_conversation_ids
 
   def perform_bulk_assignment(limit: DEFAULT_BATCH_SIZE)
+    @assigned_conversation_ids = []
     return 0 if inbox.auto_assignment_v2_enabled?
     return 0 unless inbox.enable_auto_assignment?
     return 0 unless inbox.auto_assignment_config['max_assignment_limit'].to_i.positive?
 
-    unassigned_conversations(limit).count { |conversation| perform_for_conversation(conversation) }
+    unassigned_conversations(limit).count do |conversation|
+      assigned = perform_for_conversation(conversation)
+      @assigned_conversation_ids << conversation.id if assigned
+      assigned
+    end
   end
 
   private
