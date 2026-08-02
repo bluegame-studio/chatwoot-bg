@@ -209,14 +209,16 @@ const actions = {
     );
     const previousAssigneeId = hasPreviousAssigneeId
       ? assignmentChange.previous_assignee_id
-      : existingConversation?.meta?.assignee?.id ?? null;
+      : (existingConversation?.meta?.assignee?.id ?? null);
 
-    const isAutomaticAssignment = assignmentChange.automatic === true;
-    const wasUnassigned = previousAssigneeId == null;
+    const isSelfAssignment = assignmentChange.self_assigned === true;
+    const assigneeChanged =
+      previousAssigneeId == null ||
+      Number(previousAssigneeId) !== Number(assigneeId);
     const isAssignedToCurrentUser =
       Number(assigneeId) === Number(currentUserId);
 
-    if (!isAutomaticAssignment || !wasUnassigned || !isAssignedToCurrentUser) {
+    if (!assigneeChanged || !isAssignedToCurrentUser || isSelfAssignment) {
       return false;
     }
 

@@ -244,7 +244,8 @@ class ActionCableListener < BaseListener
       assignment_change: {
         previous_assignee_id: previous_assignee_id,
         assignee_id: assignee_id,
-        automatic: performed_by.instance_of?(AssignmentPolicy) || performed_by.instance_of?(Inbox)
+        automatic: performed_by.instance_of?(AssignmentPolicy) || performed_by.instance_of?(Inbox),
+        self_assigned: Current.user.is_a?(User) && Current.user.id == assignee_id
       }
     }
   end

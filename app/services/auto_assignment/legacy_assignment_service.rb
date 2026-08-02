@@ -29,10 +29,16 @@ class AutoAssignment::LegacyAssignmentService
     allowed_agent_ids = allowed_agent_ids_for(conversation)
     return false if allowed_agent_ids.empty?
 
-    AutoAssignment::AgentAssignmentService.new(
-      conversation: conversation,
-      allowed_agent_ids: allowed_agent_ids
-    ).perform
+    previous_executed_by = Current.executed_by
+    begin
+      Current.executed_by = inbox
+      AutoAssignment::AgentAssignmentService.new(
+        conversation: conversation,
+        allowed_agent_ids: allowed_agent_ids
+      ).perform
+    ensure
+      Current.executed_by = previous_executed_by
+    end
   end
 
   def allowed_agent_ids_for(conversation)
