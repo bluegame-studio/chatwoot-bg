@@ -11,10 +11,16 @@ import VideoCallButton from '../VideoCallButton.vue';
 import { INBOX_TYPES } from 'dashboard/helper/inbox';
 import { mapGetters } from 'vuex';
 import NextButton from 'dashboard/components-next/button/Button.vue';
+import AiTranslationPopover from './AiTranslationPopover.vue';
 
 export default {
   name: 'ReplyBottomPanel',
-  components: { NextButton, FileUpload, VideoCallButton },
+  components: {
+    AiTranslationPopover,
+    NextButton,
+    FileUpload,
+    VideoCallButton,
+  },
   mixins: [inboxMixin],
   props: {
     isNote: {
@@ -96,8 +102,7 @@ export default {
       type: Number,
       required: true,
     },
-    // eslint-disable-next-line vue/no-unused-properties
-    message: {
+    translationContent: {
       type: String,
       default: '',
     },
@@ -131,6 +136,7 @@ export default {
     'selectWhatsappTemplate',
     'selectContentTemplate',
     'toggleQuotedReply',
+    'applyTranslation',
   ],
   setup(props) {
     const { setSignatureFlagForInbox, fetchSignatureFlagFromUISettings } =
@@ -338,6 +344,12 @@ export default {
         faded
         sm
         @click="toggleMessageSignature"
+      />
+      <AiTranslationPopover
+        v-if="!isEditorDisabled && !isRecordingAudio"
+        :content="translationContent"
+        :disabled="!translationContent.trim()"
+        @apply="$emit('applyTranslation', $event)"
       />
       <NextButton
         v-if="showQuotedReplyToggle"

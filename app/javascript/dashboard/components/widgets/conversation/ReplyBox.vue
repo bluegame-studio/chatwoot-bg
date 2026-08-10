@@ -197,6 +197,17 @@ export default {
       );
       return !!stripped.trim();
     },
+    aiTranslationContent() {
+      if (this.isPrivate || !this.sendWithSignature || !this.messageSignature) {
+        return this.message;
+      }
+
+      return removeSignature(
+        this.message,
+        this.messageSignature,
+        getEffectiveChannelType(this.channelType, this.inbox?.medium || '')
+      );
+    },
     isReplyRestricted() {
       return (
         !this.currentChat?.can_reply &&
@@ -950,6 +961,18 @@ export default {
       this.updateEditorSelectionWith = content;
       this.onFocus();
     },
+    applyAiTranslation(content) {
+      if (this.isPrivate || !this.sendWithSignature || !this.messageSignature) {
+        this.message = content;
+        return;
+      }
+
+      this.message = appendSignature(
+        content,
+        this.messageSignature,
+        getEffectiveChannelType(this.channelType, this.inbox?.medium || '')
+      );
+    },
     executeCopilotAction(action, data) {
       this.copilot.execute(action, data);
     },
@@ -1434,13 +1457,14 @@ export default {
         :toggle-audio-recorder-play-pause="toggleAudioRecorderPlayPause"
         :toggle-audio-recorder="toggleAudioRecorder"
         :toggle-emoji-picker="toggleEmojiPicker"
-        :message="message"
+        :translation-content="aiTranslationContent"
         :portal-slug="connectedPortalSlug"
         :new-conversation-modal-active="newConversationModalActive"
         @select-whatsapp-template="openWhatsappTemplateModal"
         @select-content-template="openContentTemplateModal"
         @toggle-insert-article="toggleInsertArticle"
         @toggle-quoted-reply="toggleQuotedReply"
+        @apply-translation="applyAiTranslation"
       />
     </Transition>
 
