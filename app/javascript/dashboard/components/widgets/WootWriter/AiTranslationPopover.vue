@@ -5,9 +5,11 @@ import { useI18n } from 'vue-i18n';
 
 import aiTranslationAPI from 'dashboard/api/aiTranslation';
 import { useConfig } from 'dashboard/composables/useConfig';
+import { LOCAL_STORAGE_KEYS } from 'dashboard/constants/localStorage';
 import Button from 'dashboard/components-next/button/Button.vue';
 import ComboBox from 'dashboard/components-next/combobox/ComboBox.vue';
 import Icon from 'dashboard/components-next/icon/Icon.vue';
+import { LocalStorage } from 'shared/helpers/localStorage';
 
 const props = defineProps({
   content: { type: String, default: '' },
@@ -18,11 +20,13 @@ const emit = defineEmits(['apply']);
 
 const { t } = useI18n();
 const { aiTranslateEnabled, enabledLanguages } = useConfig();
+const storedLanguagePreferences =
+  LocalStorage.get(LOCAL_STORAGE_KEYS.AI_TRANSLATION_LANGUAGES) || {};
 
 const isOpen = ref(false);
 const isTranslating = ref(false);
-const sourceLang = ref('zh');
-const targetLang = ref('en');
+const sourceLang = ref(storedLanguagePreferences.sourceLang || 'zh');
+const targetLang = ref(storedLanguagePreferences.targetLang || 'en');
 const translatedContent = ref('');
 const errorMessage = ref('');
 const translationRequestId = ref(0);
@@ -139,6 +143,15 @@ watch(
   () => props.content,
   () => invalidateTranslation()
 );
+
+watch([sourceLang, targetLang], ([newSourceLang, newTargetLang]) => {
+  if (!newSourceLang || !newTargetLang) return;
+
+  LocalStorage.set(LOCAL_STORAGE_KEYS.AI_TRANSLATION_LANGUAGES, {
+    sourceLang: newSourceLang,
+    targetLang: newTargetLang,
+  });
+});
 </script>
 
 <template>
@@ -183,6 +196,7 @@ watch(
               v-model="sourceLang"
               :options="languageOptions"
               :disabled="isTranslating"
+              dropdown-placement="top"
               @update:model-value="resetResult"
             />
           </div>
@@ -208,6 +222,7 @@ watch(
               v-model="targetLang"
               :options="languageOptions"
               :disabled="isTranslating"
+              dropdown-placement="top"
               @update:model-value="resetResult"
             />
           </div>

@@ -24,6 +24,11 @@ const props = defineProps({
   message: { type: String, default: '' },
   hasError: { type: Boolean, default: false },
   useApiResults: { type: Boolean, default: false }, // useApiResults prop to determine if search is handled by API
+  dropdownPlacement: {
+    type: String,
+    default: 'bottom',
+    validator: value => ['top', 'bottom'].includes(value),
+  },
 });
 
 const emit = defineEmits(['update:modelValue', 'search', 'open']);
@@ -124,6 +129,7 @@ watch(
         :search-placeholder="searchPlaceholder"
         :empty-state="emptyState"
         :selected-values="selectedValue"
+        :placement="dropdownPlacement"
         @search="emit('search', $event)"
         @select="selectOption"
       />
