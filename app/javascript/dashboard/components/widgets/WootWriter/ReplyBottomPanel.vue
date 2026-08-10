@@ -11,12 +11,10 @@ import VideoCallButton from '../VideoCallButton.vue';
 import { INBOX_TYPES } from 'dashboard/helper/inbox';
 import { mapGetters } from 'vuex';
 import NextButton from 'dashboard/components-next/button/Button.vue';
-import AiTranslationPopover from './AiTranslationPopover.vue';
 
 export default {
   name: 'ReplyBottomPanel',
   components: {
-    AiTranslationPopover,
     NextButton,
     FileUpload,
     VideoCallButton,
@@ -102,7 +100,23 @@ export default {
       type: Number,
       required: true,
     },
-    translationContent: {
+    showTranslation: {
+      type: Boolean,
+      default: false,
+    },
+    canTranslate: {
+      type: Boolean,
+      default: false,
+    },
+    isTranslating: {
+      type: Boolean,
+      default: false,
+    },
+    translationTooltip: {
+      type: String,
+      default: '',
+    },
+    translationLabel: {
       type: String,
       default: '',
     },
@@ -136,7 +150,7 @@ export default {
     'selectWhatsappTemplate',
     'selectContentTemplate',
     'toggleQuotedReply',
-    'applyTranslation',
+    'translate',
   ],
   setup(props) {
     const { setSignatureFlagForInbox, fetchSignatureFlagFromUISettings } =
@@ -282,8 +296,11 @@ export default {
 </script>
 
 <template>
-  <div class="flex justify-between p-3" :class="wrapClass">
-    <div class="left-wrap">
+  <div
+    class="flex flex-wrap items-center justify-between gap-2 p-3"
+    :class="wrapClass"
+  >
+    <div class="left-wrap min-w-0 flex-wrap">
       <NextButton
         v-if="!isEditorDisabled"
         v-tooltip.top-end="$t('CONVERSATION.REPLYBOX.TIP_EMOJI_ICON')"
@@ -345,12 +362,6 @@ export default {
         sm
         @click="toggleMessageSignature"
       />
-      <AiTranslationPopover
-        v-if="!isEditorDisabled && !isRecordingAudio"
-        :content="translationContent"
-        :disabled="!translationContent.trim()"
-        @apply="$emit('applyTranslation', $event)"
-      />
       <NextButton
         v-if="showQuotedReplyToggle"
         v-tooltip.top-end="quotedReplyToggleTooltip"
@@ -408,7 +419,18 @@ export default {
         @click="toggleInsertArticle"
       />
     </div>
-    <div class="right-wrap">
+    <div class="right-wrap gap-2 ltr:ml-auto rtl:mr-auto">
+      <div v-if="showTranslation" v-tooltip.top="translationTooltip">
+        <NextButton
+          :label="translationLabel"
+          slate
+          outline
+          sm
+          :is-loading="isTranslating"
+          :disabled="!canTranslate"
+          @click="$emit('translate')"
+        />
+      </div>
       <NextButton
         :label="sendButtonText"
         type="submit"

@@ -299,6 +299,7 @@
       "DELETE": "삭제",
       "CREATE_A_CANNED_RESPONSE": "미리 준비된 답변에 추가",
       "TRANSLATE": "번역",
+      "RETRANSLATE": "다시 번역",
       "COPY_PERMALINK": "메시지 링크 복사",
       "LINK_COPIED": "메시지 URL이 클립보드에 복사되었습니다",
       "DELETE_CONFIRMATION": {

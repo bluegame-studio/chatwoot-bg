@@ -299,6 +299,7 @@
       "DELETE": "Şterge",
       "CREATE_A_CANNED_RESPONSE": "Adaugați la răspunsuri predefinite",
       "TRANSLATE": "Traduceți",
+      "RETRANSLATE": "Traduceți din nou",
       "COPY_PERMALINK": "Copierea linkului la mesaj",
       "LINK_COPIED": "URL-ul mesajului copiat în clipboard",
       "DELETE_CONFIRMATION": {

@@ -299,6 +299,7 @@
       "DELETE": "Elimina",
       "CREATE_A_CANNED_RESPONSE": "Aggiungi alle Risposte Predefinite",
       "TRANSLATE": "Traduci",
+      "RETRANSLATE": "Traduci di nuovo",
       "COPY_PERMALINK": "Copia il link al messaggio",
       "LINK_COPIED": "URL del messaggio copiato negli appunti",
       "DELETE_CONFIRMATION": {

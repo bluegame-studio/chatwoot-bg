@@ -299,6 +299,7 @@
       "DELETE": "حذف",
       "CREATE_A_CANNED_RESPONSE": "اضافه کردن به پاسخ‌های آماده",
       "TRANSLATE": "ترجمه",
+      "RETRANSLATE": "ترجمه مجدد",
       "COPY_PERMALINK": "کپی پیوند پیام",
       "LINK_COPIED": "نشانی اینترنتی پیام در کلیپ‌بورد کپی شد",
       "DELETE_CONFIRMATION": {

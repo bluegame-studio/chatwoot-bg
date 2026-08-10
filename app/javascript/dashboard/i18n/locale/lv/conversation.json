@@ -299,6 +299,7 @@
       "DELETE": "Dzēst",
       "CREATE_A_CANNED_RESPONSE": "Pievienot sagatavotajām atbildēm",
       "TRANSLATE": "Tulkot",
+      "RETRANSLATE": "Tulkot vēlreiz",
       "COPY_PERMALINK": "Kopēt saiti uz ziņojumu",
       "LINK_COPIED": "Ziņojuma URL ir iekopēts starpliktuvē",
       "DELETE_CONFIRMATION": {

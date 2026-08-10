@@ -299,6 +299,7 @@
       "DELETE": "Kustuta",
       "CREATE_A_CANNED_RESPONSE": "Lisa eelseadistatud vastustesse",
       "TRANSLATE": "Tõlgi",
+      "RETRANSLATE": "Tõlgi uuesti",
       "COPY_PERMALINK": "Kopeeri sõnumi link",
       "LINK_COPIED": "Sõnumi URL on lõikelauale kopeeritud",
       "DELETE_CONFIRMATION": {

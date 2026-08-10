@@ -33,11 +33,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  placement: {
-    type: String,
-    default: 'bottom',
-    validator: value => ['top', 'bottom'].includes(value),
-  },
 });
 
 const emit = defineEmits(['select', 'search']);
@@ -71,8 +66,7 @@ defineExpose({
 <template>
   <div
     v-show="open"
-    class="absolute z-50 w-full transition-opacity duration-200 border rounded-md shadow-lg bg-n-solid-1 border-n-strong"
-    :class="placement === 'top' ? 'bottom-full mb-1' : 'mt-1'"
+    class="absolute z-50 w-full mt-1 transition-opacity duration-200 border rounded-md shadow-lg bg-n-solid-1 border-n-strong"
   >
     <div class="relative border-b border-n-strong">
       <Spinner

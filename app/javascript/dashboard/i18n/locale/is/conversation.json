@@ -298,7 +298,8 @@
       "REPLY_TO": "Reply to this message",
       "DELETE": "Eyða",
       "CREATE_A_CANNED_RESPONSE": "Bæta við stöðluðu svari",
-      "TRANSLATE": "Translate",
+      "TRANSLATE": "Þýða",
+      "RETRANSLATE": "Þýða aftur",
       "COPY_PERMALINK": "Copy link to the message",
       "LINK_COPIED": "Message URL copied to the clipboard",
       "DELETE_CONFIRMATION": {

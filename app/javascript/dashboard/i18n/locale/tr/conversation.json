@@ -299,6 +299,7 @@
       "DELETE": "Sil",
       "CREATE_A_CANNED_RESPONSE": "Hızlı cevaplara ekle",
       "TRANSLATE": "Çevir",
+      "RETRANSLATE": "Tekrar çevir",
       "COPY_PERMALINK": "Mesajın bağlantısını kopyala",
       "LINK_COPIED": "Mesaj URL'si panoya kopyalandı",
       "DELETE_CONFIRMATION": {

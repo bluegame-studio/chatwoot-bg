@@ -299,6 +299,7 @@
       "DELETE": "刪除",
       "CREATE_A_CANNED_RESPONSE": "新增至快捷回覆",
       "TRANSLATE": "翻譯",
+      "RETRANSLATE": "重新翻譯",
       "COPY_PERMALINK": "複製訊息連結",
       "LINK_COPIED": "訊息連結已複製到剪貼簿",
       "DELETE_CONFIRMATION": {

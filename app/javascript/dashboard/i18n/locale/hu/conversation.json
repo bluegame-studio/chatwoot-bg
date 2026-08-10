@@ -299,6 +299,7 @@
       "DELETE": "Törlés",
       "CREATE_A_CANNED_RESPONSE": "Mentett válasz hozzáadása",
       "TRANSLATE": "Fordítás",
+      "RETRANSLATE": "Fordítás újra",
       "COPY_PERMALINK": "Link másolása az üzenetbe",
       "LINK_COPIED": "Üzenet URL címe másolva lett a vágólapra",
       "DELETE_CONFIRMATION": {

@@ -299,6 +299,7 @@
       "DELETE": "Ištrinti",
       "CREATE_A_CANNED_RESPONSE": "Pridėti Atsakymų Ruošinius",
       "TRANSLATE": "Išversti",
+      "RETRANSLATE": "Versti dar kartą",
       "COPY_PERMALINK": "Nukopijuoti nuorodą į pranešimą",
       "LINK_COPIED": "Pranešimo URL nukopijuotas į iškarpinę",
       "DELETE_CONFIRMATION": {

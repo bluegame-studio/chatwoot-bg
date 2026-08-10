@@ -298,7 +298,8 @@
       "REPLY_TO": "Svara på detta meddelande",
       "DELETE": "Radera",
       "CREATE_A_CANNED_RESPONSE": "Add to canned responses",
-      "TRANSLATE": "Translate",
+      "TRANSLATE": "Översätt",
+      "RETRANSLATE": "Översätt igen",
       "COPY_PERMALINK": "Copy link to the message",
       "LINK_COPIED": "Message URL copied to the clipboard",
       "DELETE_CONFIRMATION": {

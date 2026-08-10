@@ -21,14 +21,10 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   searchPlaceholder: { type: String, default: '' },
   emptyState: { type: String, default: '' },
+  dropdownClass: { type: [String, Array, Object], default: '' },
   message: { type: String, default: '' },
   hasError: { type: Boolean, default: false },
   useApiResults: { type: Boolean, default: false }, // useApiResults prop to determine if search is handled by API
-  dropdownPlacement: {
-    type: String,
-    default: 'bottom',
-    validator: value => ['top', 'bottom'].includes(value),
-  },
 });
 
 const emit = defineEmits(['update:modelValue', 'search', 'open']);
@@ -124,12 +120,12 @@ watch(
       <ComboBoxDropdown
         ref="dropdownRef"
         v-model:search-value="search"
+        :class="dropdownClass"
         :open="open"
         :options="filteredOptions"
         :search-placeholder="searchPlaceholder"
         :empty-state="emptyState"
         :selected-values="selectedValue"
-        :placement="dropdownPlacement"
         @search="emit('search', $event)"
         @select="selectOption"
       />

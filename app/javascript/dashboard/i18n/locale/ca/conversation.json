@@ -299,6 +299,7 @@
       "DELETE": "Esborrar",
       "CREATE_A_CANNED_RESPONSE": "Afegir a les respostes predeterminades",
       "TRANSLATE": "Tradueix",
+      "RETRANSLATE": "Torna a traduir",
       "COPY_PERMALINK": "Copia l'enllaç al missatge",
       "LINK_COPIED": "URL del missatge copiat al porta-retalls",
       "DELETE_CONFIRMATION": {

@@ -299,6 +299,7 @@
       "DELETE": "Hapus",
       "CREATE_A_CANNED_RESPONSE": "Tambahkan ke respon siap pakai",
       "TRANSLATE": "Terjemahkan",
+      "RETRANSLATE": "Terjemahkan lagi",
       "COPY_PERMALINK": "Salin tautan ke pesan",
       "LINK_COPIED": "Tautan pesan disalin ke clipboard",
       "DELETE_CONFIRMATION": {

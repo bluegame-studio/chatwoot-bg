@@ -299,6 +299,7 @@
       "DELETE": "削除",
       "CREATE_A_CANNED_RESPONSE": "定型文応答に追加",
       "TRANSLATE": "翻訳",
+      "RETRANSLATE": "再翻訳",
       "COPY_PERMALINK": "メッセージへのリンクをコピー",
       "LINK_COPIED": "メッセージのURLがクリップボードにコピーされました",
       "DELETE_CONFIRMATION": {

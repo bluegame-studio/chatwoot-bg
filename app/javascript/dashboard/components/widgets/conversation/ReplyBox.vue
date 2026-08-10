@@ -9,6 +9,7 @@ import keyboardEventListenerMixins from 'shared/mixins/keyboardEventListenerMixi
 import ReplyToMessage from './ReplyToMessage.vue';
 import AttachmentPreview from 'dashboard/components/widgets/AttachmentsPreview.vue';
 import ReplyTopPanel from 'dashboard/components/widgets/WootWriter/ReplyTopPanel.vue';
+import AiTranslationControls from 'dashboard/components/widgets/WootWriter/AiTranslationControls.vue';
 import ReplyEmailHead from './ReplyEmailHead.vue';
 import ReplyBottomPanel from 'dashboard/components/widgets/WootWriter/ReplyBottomPanel.vue';
 import CopilotReplyBottomPanel from 'dashboard/components/widgets/WootWriter/CopilotReplyBottomPanel.vue';
@@ -52,8 +53,11 @@ import {
   getContactVariables,
 } from 'dashboard/helper/editorHelper';
 import { useCopilotReply } from 'dashboard/composables/useCopilotReply';
+import { useAiTranslation } from 'dashboard/composables/useAiTranslation';
 import { useKbd } from 'dashboard/composables/utils/useKbd';
 import { isFileTypeAllowedForChannel } from 'shared/helpers/FileHelper';
+import NextButton from 'dashboard/components-next/button/Button.vue';
+import Icon from 'dashboard/components-next/icon/Icon.vue';
 
 import { LOCAL_STORAGE_KEYS } from 'dashboard/constants/localStorage';
 import { LocalStorage } from 'shared/helpers/localStorage';
@@ -66,6 +70,7 @@ const EmojiIconPicker = defineAsyncComponent(
 export default {
   components: {
     ArticleSearchPopover,
+    AiTranslationControls,
     AttachmentPreview,
     AudioRecorder,
     ReplyBoxBanner,
@@ -81,6 +86,8 @@ export default {
     QuotedEmailPreview,
     CopilotEditorSection,
     CopilotReplyBottomPanel,
+    NextButton,
+    Icon,
   },
   mixins: [inboxMixin, fileUploadMixin, keyboardEventListenerMixins],
   emits: ['toggleEditorSize'],
@@ -96,6 +103,7 @@ export default {
     const replyEditor = useTemplateRef('replyEditor');
     const messageEditor = useTemplateRef('messageEditor');
     const copilot = useCopilotReply();
+    const aiTranslation = useAiTranslation();
     const shortcutKey = useKbd(['$mod', '+', 'enter']);
 
     return {
@@ -107,6 +115,7 @@ export default {
       replyEditor,
       messageEditor,
       copilot,
+      ...aiTranslation,
       shortcutKey,
     };
   },
@@ -206,6 +215,21 @@ export default {
         this.message,
         this.messageSignature,
         getEffectiveChannelType(this.channelType, this.inbox?.medium || '')
+      );
+    },
+    showAiTranslation() {
+      return (
+        !this.isEditorDisabled &&
+        !this.showAudioRecorderEditor &&
+        !this.copilot.isActive.value
+      );
+    },
+    showAiTranslationControls() {
+      return this.showAiTranslation && this.aiTranslateEnabled;
+    },
+    canTranslateAiContent() {
+      return (
+        this.showAiTranslation && this.canTranslate(this.aiTranslationContent)
       );
     },
     isReplyRestricted() {
@@ -475,6 +499,7 @@ export default {
         this.setCCAndToEmailsFromLastChat();
         // Reset Copilot editor state (includes cancelling ongoing generation)
         this.copilot.reset();
+        this.invalidateTranslation();
       }
 
       if (this.isOnPrivateNote) {
@@ -511,6 +536,10 @@ export default {
     message() {
       // Autosave the current message draft.
       this.doAutoSaveDraft();
+      this.invalidateTranslation();
+    },
+    showAiTranslation(isVisible) {
+      if (!isVisible) this.invalidateTranslation();
     },
     replyType(updatedReplyType, oldReplyType) {
       this.setToDraft(this.conversationIdByRoute, oldReplyType);
@@ -964,6 +993,7 @@ export default {
     applyAiTranslation(content) {
       if (this.isPrivate || !this.sendWithSignature || !this.messageSignature) {
         this.message = content;
+        this.invalidateTranslation();
         return;
       }
 
@@ -972,6 +1002,10 @@ export default {
         this.messageSignature,
         getEffectiveChannelType(this.channelType, this.inbox?.medium || '')
       );
+      this.invalidateTranslation();
+    },
+    translateAiContent() {
+      this.translateContent(this.aiTranslationContent);
     },
     executeCopilotAction(action, data) {
       this.copilot.execute(action, data);
@@ -1294,7 +1328,18 @@ export default {
       @toggle-editor-size="toggleEditorSize"
       @toggle-copilot="copilot.toggleEditor"
       @execute-copilot-action="executeCopilotAction"
-    />
+    >
+      <template #translation-controls>
+        <AiTranslationControls
+          v-if="showAiTranslationControls"
+          v-model:source-language="sourceTranslationLanguage"
+          v-model:target-language="targetTranslationLanguage"
+          :language-options="translationLanguageOptions"
+          :disabled="isTranslating"
+          @swap="swapTranslationLanguages"
+        />
+      </template>
+    </ReplyTopPanel>
     <ArticleSearchPopover
       v-if="showArticleSearchPopover && connectedPortalSlug"
       :selected-portal-slug="connectedPortalSlug"
@@ -1355,8 +1400,19 @@ export default {
           @content-ready="copilot.setContentReady"
           @send="copilot.sendFollowUp"
         />
+        <div
+          v-else-if="showAiTranslationControls"
+          class="mb-1 flex items-center gap-1.5 text-xs text-n-slate-10"
+        >
+          <Icon icon="i-lucide-languages" class="size-3.5 shrink-0" />
+          <span class="min-w-0 break-words">
+            {{
+              `${$t('EMAIL_HEADER.FROM')}: ${sourceTranslationLanguageLabel}`
+            }}
+          </span>
+        </div>
         <WootMessageEditor
-          v-else-if="!showAudioRecorderEditor"
+          v-if="!showAudioRecorderEditor && !copilot.isActive.value"
           ref="messageEditor"
           v-model="message"
           :conversation-id="conversationId"
@@ -1383,6 +1439,52 @@ export default {
           @clear-selection="clearEditorSelection"
           @execute-copilot-action="executeCopilotAction"
         />
+
+        <div
+          v-if="showAiTranslationControls && translatedContent"
+          class="mb-2 flex flex-col gap-2 rounded-lg border border-n-weak bg-n-alpha-2 p-3"
+          aria-live="polite"
+        >
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs font-medium text-n-slate-11">
+              {{
+                `${$t(
+                  'TRANSLATE_MODAL.TRANSLATED_CONTENT'
+                )} (${targetTranslationLanguageLabel})`
+              }}
+            </span>
+            <div class="flex flex-wrap items-center gap-2">
+              <NextButton
+                :label="retranslationActionLabel"
+                slate
+                outline
+                xs
+                :disabled="isTranslating"
+                @click="translateAiContent"
+              />
+              <NextButton
+                :label="$t('CAPTAIN.COPILOT.USE')"
+                blue
+                xs
+                @click="applyAiTranslation(translatedContent)"
+              />
+            </div>
+          </div>
+          <p
+            class="m-0 max-h-40 overflow-y-auto whitespace-pre-wrap break-words text-sm leading-5 text-n-slate-12"
+          >
+            {{ translatedContent }}
+          </p>
+        </div>
+
+        <div
+          v-if="showAiTranslationControls && translationError"
+          class="mb-2 flex items-center gap-2 text-sm text-n-ruby-11"
+          role="alert"
+        >
+          <Icon icon="i-lucide-circle-alert" class="size-4 shrink-0" />
+          <span>{{ translationError }}</span>
+        </div>
 
         <QuotedEmailPreview
           v-if="shouldShowQuotedPreview && isDefaultEditorMode"
@@ -1457,14 +1559,18 @@ export default {
         :toggle-audio-recorder-play-pause="toggleAudioRecorderPlayPause"
         :toggle-audio-recorder="toggleAudioRecorder"
         :toggle-emoji-picker="toggleEmojiPicker"
-        :translation-content="aiTranslationContent"
+        :show-translation="showAiTranslation"
+        :can-translate="canTranslateAiContent"
+        :is-translating="isTranslating"
+        :translation-label="translationActionLabel"
+        :translation-tooltip="translationTooltip"
         :portal-slug="connectedPortalSlug"
         :new-conversation-modal-active="newConversationModalActive"
         @select-whatsapp-template="openWhatsappTemplateModal"
         @select-content-template="openContentTemplateModal"
         @toggle-insert-article="toggleInsertArticle"
         @toggle-quoted-reply="toggleQuotedReply"
-        @apply-translation="applyAiTranslation"
+        @translate="translateAiContent"
       />
     </Transition>
 

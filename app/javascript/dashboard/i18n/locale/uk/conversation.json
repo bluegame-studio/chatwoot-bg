@@ -299,6 +299,7 @@
       "DELETE": "Видалити",
       "CREATE_A_CANNED_RESPONSE": "Додати швидку відповідь",
       "TRANSLATE": "Перекласти",
+      "RETRANSLATE": "Перекласти знову",
       "COPY_PERMALINK": "Копіювати посилання на повідомлення",
       "LINK_COPIED": "URL повідомлення скопійовано до буфера обміну",
       "DELETE_CONFIRMATION": {

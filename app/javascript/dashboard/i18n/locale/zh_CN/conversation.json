@@ -299,6 +299,7 @@
       "DELETE": "删除",
       "CREATE_A_CANNED_RESPONSE": "添加到预定义回复",
       "TRANSLATE": "翻译",
+      "RETRANSLATE": "重新翻译",
       "COPY_PERMALINK": "复制消息链接",
       "LINK_COPIED": "消息链接已复制到剪贴板",
       "DELETE_CONFIRMATION": {
