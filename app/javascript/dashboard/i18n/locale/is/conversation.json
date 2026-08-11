@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Upprunatungumál",
+    "TARGET_LANGUAGE": "Marktungumál"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Vinsamlegast veldu samtal úr vinstri glugganum",
     "CSAT_REPLY_MESSAGE": "Vinsamlegast gefðu samtalinu einkun",

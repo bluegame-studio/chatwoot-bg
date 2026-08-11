@@ -1,4 +1,9 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Source language",
+    "TARGET_LANGUAGE": "Target language",
+    "CONFIGURATION_REQUIRED": "Configure AI_TRANSLATE_API_BASE_URL, AI_TRANSLATE_CLIENT_ID, and AI_TRANSLATE_CLIENT_SECRET to enable translation"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Please select a conversation from left pane",
     "CSAT_REPLY_MESSAGE": "Please rate the conversation",
@@ -279,9 +284,6 @@
         "REMOVE_PREVIEW": "Remove quoted email thread",
         "COLLAPSE": "Collapse preview",
         "EXPAND": "Expand preview"
-      },
-      "AI_TRANSLATION": {
-        "CONFIGURATION_REQUIRED": "Configure AI_TRANSLATE_API_BASE_URL, AI_TRANSLATE_CLIENT_ID, and AI_TRANSLATE_CLIENT_SECRET to enable translation"
       }
     },
     "VISIBLE_TO_AGENTS": "Private Note: Only visible to you and your team",

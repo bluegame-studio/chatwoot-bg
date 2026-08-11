@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Kildesprog",
+    "TARGET_LANGUAGE": "Målsprog"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Vælg venligst en samtale fra venstre rude",
     "CSAT_REPLY_MESSAGE": "Bedøm venligst samtalen",

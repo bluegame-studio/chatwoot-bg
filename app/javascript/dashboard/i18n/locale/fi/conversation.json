@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Lähdekieli",
+    "TARGET_LANGUAGE": "Kohdekieli"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Ole hyvä ja valitse keskustelu vasemmasta paneelista",
     "CSAT_REPLY_MESSAGE": "Voisitko antaa palautetta saamastasi palvelusta?",

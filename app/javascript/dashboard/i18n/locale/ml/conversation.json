@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "ഉറവിട ഭാഷ",
+    "TARGET_LANGUAGE": "ലക്ഷ്യ ഭാഷ"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "ഇടത് പാളിയിൽ നിന്ന് ഒരു സംഭാഷണം തിരഞ്ഞെടുക്കുക",
     "CSAT_REPLY_MESSAGE": "Please rate the conversation",

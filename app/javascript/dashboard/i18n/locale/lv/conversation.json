@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Avota valoda",
+    "TARGET_LANGUAGE": "Mērķa valoda"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Lūdzu, izvēlieties sarunu kreisajā rūtī",
     "CSAT_REPLY_MESSAGE": "Lūdzu, novērtējiet sarunu",

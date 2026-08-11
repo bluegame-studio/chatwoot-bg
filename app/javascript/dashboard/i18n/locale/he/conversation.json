@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "שפת מקור",
+    "TARGET_LANGUAGE": "שפת יעד"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "אנא בחר שיחה מהחלונית השמאלית",
     "CSAT_REPLY_MESSAGE": "נא דרג שיחה זו",

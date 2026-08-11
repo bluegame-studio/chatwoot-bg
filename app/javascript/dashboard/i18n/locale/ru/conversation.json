@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Исходный язык",
+    "TARGET_LANGUAGE": "Целевой язык"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Пожалуйста, выберите диалог из левой панели",
     "CSAT_REPLY_MESSAGE": "Пожалуйста, оцените диалог",

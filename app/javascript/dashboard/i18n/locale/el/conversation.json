@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Γλώσσα προέλευσης",
+    "TARGET_LANGUAGE": "Γλώσσα προορισμού"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Παρακαλώ επιλέξτε συζήτηση από το αριστερό τμήμα",
     "CSAT_REPLY_MESSAGE": "Παρακαλώ αξιολογήστε τη συνομιλία",

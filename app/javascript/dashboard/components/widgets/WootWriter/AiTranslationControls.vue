@@ -24,11 +24,12 @@ const { t } = useI18n();
   <div class="flex min-w-0 flex-wrap items-end gap-1.5">
     <label class="flex w-32 min-w-0 flex-col gap-1">
       <span class="text-xs text-n-slate-10">
-        {{ t('EMAIL_HEADER.FROM') }}
+        {{ t('AI_TRANSLATION.SOURCE_LANGUAGE') }}
       </span>
       <ComboBox
         class="w-full [&>button]:h-8 [&>button]:!px-2.5 [&>button]:!py-1.5 [&>button>span]:truncate"
         dropdown-class="min-w-48 ltr:left-0 rtl:right-0"
+        dropdown-placement="top"
         :model-value="sourceLanguage"
         :options="languageOptions"
         :disabled="disabled"
@@ -57,11 +58,12 @@ const { t } = useI18n();
 
     <label class="flex w-32 min-w-0 flex-col gap-1">
       <span class="text-xs text-n-slate-10">
-        {{ t('EMAIL_HEADER.TO') }}
+        {{ t('AI_TRANSLATION.TARGET_LANGUAGE') }}
       </span>
       <ComboBox
         class="w-full [&>button]:h-8 [&>button]:!px-2.5 [&>button]:!py-1.5 [&>button>span]:truncate"
         dropdown-class="min-w-48 ltr:right-0 rtl:left-0"
+        dropdown-placement="top"
         :model-value="targetLanguage"
         :options="languageOptions"
         :disabled="disabled"

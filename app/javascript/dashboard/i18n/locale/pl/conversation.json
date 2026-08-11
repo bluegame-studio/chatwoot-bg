@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Język źródłowy",
+    "TARGET_LANGUAGE": "Język docelowy"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Wybierz konwersację z lewego panelu",
     "CSAT_REPLY_MESSAGE": "Oceń konwersację",

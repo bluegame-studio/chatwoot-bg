@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "لغة المصدر",
+    "TARGET_LANGUAGE": "اللغة الهدف"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "الرجاء اختيار محادثة من قائمة المحادثات",
     "CSAT_REPLY_MESSAGE": "الرجاء تقييم المحادثة",

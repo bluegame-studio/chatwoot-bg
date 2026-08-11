@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "원본 언어",
+    "TARGET_LANGUAGE": "대상 언어"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "왼쪽 창에서 대화를 선택하십시오.",
     "CSAT_REPLY_MESSAGE": "대화를 평가해 주십시오",

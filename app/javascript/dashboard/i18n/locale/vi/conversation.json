@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Ngôn ngữ nguồn",
+    "TARGET_LANGUAGE": "Ngôn ngữ đích"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Vui lòng chọn một cuộc trò chuyện từ ngăn bên trái",
     "CSAT_REPLY_MESSAGE": "Bạn hãy vui lòng đánh giá hội thoại",

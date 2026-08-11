@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Lähtekeel",
+    "TARGET_LANGUAGE": "Sihtkeel"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Palun vali vestlus vasakpoolsest paneelist",
     "CSAT_REPLY_MESSAGE": "Palun hinda vestlust",

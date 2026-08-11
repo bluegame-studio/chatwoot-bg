@@ -66,7 +66,7 @@ export function useAiTranslation() {
       return translationActionLabel.value;
     }
 
-    return t('CONVERSATION.REPLYBOX.AI_TRANSLATION.CONFIGURATION_REQUIRED');
+    return t('AI_TRANSLATION.CONFIGURATION_REQUIRED');
   });
 
   const resetTranslationResult = () => {

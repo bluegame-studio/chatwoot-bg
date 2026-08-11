@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "來源語言",
+    "TARGET_LANGUAGE": "目標語言"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "請從左側窗格選擇一個對話",
     "CSAT_REPLY_MESSAGE": "請為此對話評分",

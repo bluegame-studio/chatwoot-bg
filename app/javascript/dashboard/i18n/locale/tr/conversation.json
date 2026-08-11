@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Kaynak dil",
+    "TARGET_LANGUAGE": "Hedef dil"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Lütfen sol bölmeden bir konuşma seçin",
     "CSAT_REPLY_MESSAGE": "Lütfen görüşmeyi değerlendirin",

@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Izvorni jezik",
+    "TARGET_LANGUAGE": "Ciljni jezik"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Izaberite razgovor sa leve strane",
     "CSAT_REPLY_MESSAGE": "Molim vas ocenite ovaj razgovor",

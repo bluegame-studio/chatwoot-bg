@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Kildespråk",
+    "TARGET_LANGUAGE": "Målspråk"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Velg en samtale fra venstre panel",
     "CSAT_REPLY_MESSAGE": "Please rate the conversation",

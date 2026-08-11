@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Bahasa sumber",
+    "TARGET_LANGUAGE": "Bahasa tujuan"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Pilih percakapan dari panel kiri",
     "CSAT_REPLY_MESSAGE": "Silakan beri peringkat percakapan ini",

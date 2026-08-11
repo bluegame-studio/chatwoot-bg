@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "ภาษาต้นทาง",
+    "TARGET_LANGUAGE": "ภาษาเป้าหมาย"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "กรุณาเลือกการสนทนาจากด้านซ้าย",
     "CSAT_REPLY_MESSAGE": "กรุณาให้คะแนนการสนทนาในครั้งนี้",

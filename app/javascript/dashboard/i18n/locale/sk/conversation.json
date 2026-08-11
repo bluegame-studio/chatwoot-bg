@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Zdrojový jazyk",
+    "TARGET_LANGUAGE": "Cieľový jazyk"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Vyberte si konverzáciu z ľavého panela",
     "CSAT_REPLY_MESSAGE": "Prosím, ohodnoťte konverzáciu",

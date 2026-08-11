@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Forrásnyelv",
+    "TARGET_LANGUAGE": "Célnyelv"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Kérjük válassz egy beszélgetést a bal sávból",
     "CSAT_REPLY_MESSAGE": "Kérlek értékeld a beszélgetést",
