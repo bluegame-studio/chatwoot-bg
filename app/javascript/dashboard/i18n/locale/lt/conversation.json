@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Šaltinio kalba",
+    "TARGET_LANGUAGE": "Tikslinė kalba"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Kairiojoje srityje pasirinkite pokalbį",
     "CSAT_REPLY_MESSAGE": "Prašome įvertinti pokalbį",
@@ -299,6 +303,7 @@
       "DELETE": "Ištrinti",
       "CREATE_A_CANNED_RESPONSE": "Pridėti Atsakymų Ruošinius",
       "TRANSLATE": "Išversti",
+      "RETRANSLATE": "Versti dar kartą",
       "COPY_PERMALINK": "Nukopijuoti nuorodą į pranešimą",
       "LINK_COPIED": "Pranešimo URL nukopijuotas į iškarpinę",
       "DELETE_CONFIRMATION": {

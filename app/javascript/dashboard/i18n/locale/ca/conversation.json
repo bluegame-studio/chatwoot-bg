@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Idioma d'origen",
+    "TARGET_LANGUAGE": "Idioma de destinació"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Si us plau, selecciona una conversa al panell de l’esquerra",
     "CSAT_REPLY_MESSAGE": "Si us plau, valoreu la conversa",
@@ -299,6 +303,7 @@
       "DELETE": "Esborrar",
       "CREATE_A_CANNED_RESPONSE": "Afegir a les respostes predeterminades",
       "TRANSLATE": "Tradueix",
+      "RETRANSLATE": "Torna a traduir",
       "COPY_PERMALINK": "Copia l'enllaç al missatge",
       "LINK_COPIED": "URL del missatge copiat al porta-retalls",
       "DELETE_CONFIRMATION": {

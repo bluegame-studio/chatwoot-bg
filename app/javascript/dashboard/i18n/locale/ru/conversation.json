@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Исходный язык",
+    "TARGET_LANGUAGE": "Целевой язык"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Пожалуйста, выберите диалог из левой панели",
     "CSAT_REPLY_MESSAGE": "Пожалуйста, оцените диалог",
@@ -299,6 +303,7 @@
       "DELETE": "Удалить",
       "CREATE_A_CANNED_RESPONSE": "Добавить в шаблонные ответы",
       "TRANSLATE": "Перевести",
+      "RETRANSLATE": "Перевести снова",
       "COPY_PERMALINK": "Скопировать ссылку на сообщение",
       "LINK_COPIED": "Ссылка на сообщение скопирована",
       "DELETE_CONFIRMATION": {

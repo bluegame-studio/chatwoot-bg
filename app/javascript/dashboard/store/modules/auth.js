@@ -1,9 +1,33 @@
 import types from '../mutation-types';
 import authAPI from '../../api/auth';
+import aiTranslationAPI from '../../api/aiTranslation';
 
 import { setUser, clearCookiesOnLogout } from '../utils/api';
 import SessionStorage from 'shared/helpers/sessionStorage';
 import { SESSION_STORAGE_KEYS } from 'dashboard/constants/sessionStorage';
+
+let aiTranslationAuthorizationTimer;
+
+const clearAiTranslationAuthorizationTimer = () => {
+  window.clearTimeout(aiTranslationAuthorizationTimer);
+};
+
+const authorizeAiTranslation = async () => {
+  clearAiTranslationAuthorizationTimer();
+  if (window.chatwootConfig?.aiTranslateEnabled !== 'true') return;
+
+  try {
+    const { data } = await aiTranslationAPI.authorize();
+    if (data.expires_in > 0) {
+      aiTranslationAuthorizationTimer = window.setTimeout(
+        authorizeAiTranslation,
+        data.expires_in * 1000
+      );
+    }
+  } catch (error) {
+    // AI translation authorization must not prevent an agent from signing in.
+  }
+};
 
 const initialState = {
   currentUser: {
@@ -107,8 +131,10 @@ export const actions = {
       const currentUser = response.data.payload.data;
       setUser(currentUser);
       context.commit(types.SET_CURRENT_USER, currentUser);
+      authorizeAiTranslation();
     } catch (error) {
       if (error?.response?.status === 401) {
+        clearAiTranslationAuthorizationTimer();
         clearCookiesOnLogout();
       }
     }
@@ -122,6 +148,7 @@ export const actions = {
     commit(types.SET_CURRENT_USER_UI_FLAGS, { isFetching: false });
   },
   logout({ commit }) {
+    clearAiTranslationAuthorizationTimer();
     commit(types.CLEAR_USER);
   },
 

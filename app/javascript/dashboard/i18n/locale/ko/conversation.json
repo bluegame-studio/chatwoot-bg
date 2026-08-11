@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "원본 언어",
+    "TARGET_LANGUAGE": "대상 언어"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "왼쪽 창에서 대화를 선택하십시오.",
     "CSAT_REPLY_MESSAGE": "대화를 평가해 주십시오",
@@ -299,6 +303,7 @@
       "DELETE": "삭제",
       "CREATE_A_CANNED_RESPONSE": "미리 준비된 답변에 추가",
       "TRANSLATE": "번역",
+      "RETRANSLATE": "다시 번역",
       "COPY_PERMALINK": "메시지 링크 복사",
       "LINK_COPIED": "메시지 URL이 클립보드에 복사되었습니다",
       "DELETE_CONFIRMATION": {

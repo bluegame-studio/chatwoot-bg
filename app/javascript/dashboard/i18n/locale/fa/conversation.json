@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "زبان مبدأ",
+    "TARGET_LANGUAGE": "زبان مقصد"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "لطفا یک گفتگو را از پنجره گفتگوها انتخاب کنید",
     "CSAT_REPLY_MESSAGE": "لطفاً به گفتگو امتیاز دهید",
@@ -299,6 +303,7 @@
       "DELETE": "حذف",
       "CREATE_A_CANNED_RESPONSE": "اضافه کردن به پاسخ‌های آماده",
       "TRANSLATE": "ترجمه",
+      "RETRANSLATE": "ترجمه مجدد",
       "COPY_PERMALINK": "کپی پیوند پیام",
       "LINK_COPIED": "نشانی اینترنتی پیام در کلیپ‌بورد کپی شد",
       "DELETE_CONFIRMATION": {

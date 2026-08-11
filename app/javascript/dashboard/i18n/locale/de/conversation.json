@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Ausgangssprache",
+    "TARGET_LANGUAGE": "Zielsprache"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Bitte wählen Sie eine Konversation aus dem linken Bereich aus",
     "CSAT_REPLY_MESSAGE": "Bitte bewerten Sie diese Unterhaltung",
@@ -299,6 +303,7 @@
       "DELETE": "Löschen",
       "CREATE_A_CANNED_RESPONSE": "Zu vorgefertigten Antworten hinzufügen",
       "TRANSLATE": "Übersetzen",
+      "RETRANSLATE": "Erneut übersetzen",
       "COPY_PERMALINK": "Link zur Nachricht kopieren",
       "LINK_COPIED": "URL der Nachricht in die Zwischenablage kopiert",
       "DELETE_CONFIRMATION": {

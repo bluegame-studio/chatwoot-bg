@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Lähtekeel",
+    "TARGET_LANGUAGE": "Sihtkeel"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Palun vali vestlus vasakpoolsest paneelist",
     "CSAT_REPLY_MESSAGE": "Palun hinda vestlust",
@@ -299,6 +303,7 @@
       "DELETE": "Kustuta",
       "CREATE_A_CANNED_RESPONSE": "Lisa eelseadistatud vastustesse",
       "TRANSLATE": "Tõlgi",
+      "RETRANSLATE": "Tõlgi uuesti",
       "COPY_PERMALINK": "Kopeeri sõnumi link",
       "LINK_COPIED": "Sõnumi URL on lõikelauale kopeeritud",
       "DELETE_CONFIRMATION": {
