@@ -42,6 +42,12 @@ export function useConfig() {
    */
   const inboxEventsEnabled = config.inboxEventsEnabled === 'true';
 
+  /**
+   * Indicates whether the external AI translation service is configured.
+   * @type {boolean}
+   */
+  const aiTranslateEnabled = config.aiTranslateEnabled === 'true';
+
   return {
     hostURL,
     vapidPublicKey,
@@ -49,5 +55,6 @@ export function useConfig() {
     isEnterprise,
     enterprisePlanName,
     inboxEventsEnabled,
+    aiTranslateEnabled,
   };
 }

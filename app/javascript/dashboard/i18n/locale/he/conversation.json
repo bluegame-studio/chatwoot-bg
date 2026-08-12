@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "שפת מקור",
+    "TARGET_LANGUAGE": "שפת יעד"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "אנא בחר שיחה מהחלונית השמאלית",
     "CSAT_REPLY_MESSAGE": "נא דרג שיחה זו",
@@ -299,6 +303,7 @@
       "DELETE": "מחק",
       "CREATE_A_CANNED_RESPONSE": "הוסף לתגובות מוכנות",
       "TRANSLATE": "תרגום",
+      "RETRANSLATE": "תרגם שוב",
       "COPY_PERMALINK": "העתק קישור להודעה",
       "LINK_COPIED": "קישור להודעה הועתק ללוח",
       "DELETE_CONFIRMATION": {

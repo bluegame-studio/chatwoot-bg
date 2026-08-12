@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "源语言",
+    "TARGET_LANGUAGE": "目标语言"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "请从左侧窗格选择一个对话",
     "CSAT_REPLY_MESSAGE": "请为会话评分",
@@ -299,6 +303,7 @@
       "DELETE": "删除",
       "CREATE_A_CANNED_RESPONSE": "添加到预定义回复",
       "TRANSLATE": "翻译",
+      "RETRANSLATE": "重新翻译",
       "COPY_PERMALINK": "复制消息链接",
       "LINK_COPIED": "消息链接已复制到剪贴板",
       "DELETE_CONFIRMATION": {

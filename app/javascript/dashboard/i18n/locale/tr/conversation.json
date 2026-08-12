@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Kaynak dil",
+    "TARGET_LANGUAGE": "Hedef dil"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Lütfen sol bölmeden bir konuşma seçin",
     "CSAT_REPLY_MESSAGE": "Lütfen görüşmeyi değerlendirin",
@@ -299,6 +303,7 @@
       "DELETE": "Sil",
       "CREATE_A_CANNED_RESPONSE": "Hızlı cevaplara ekle",
       "TRANSLATE": "Çevir",
+      "RETRANSLATE": "Tekrar çevir",
       "COPY_PERMALINK": "Mesajın bağlantısını kopyala",
       "LINK_COPIED": "Mesaj URL'si panoya kopyalandı",
       "DELETE_CONFIRMATION": {

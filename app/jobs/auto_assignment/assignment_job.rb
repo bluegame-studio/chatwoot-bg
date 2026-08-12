@@ -26,8 +26,14 @@ class AutoAssignment::AssignmentJob < ApplicationJob
     inbox = Inbox.find_by(id: inbox_id)
     return unless inbox
 
-    service = AutoAssignment::AssignmentService.new(inbox: inbox)
+    legacy_assignment = !inbox.auto_assignment_v2_enabled?
+    service = if legacy_assignment
+                AutoAssignment::LegacyAssignmentService.new(inbox: inbox)
+              else
+                AutoAssignment::AssignmentService.new(inbox: inbox)
+              end
     assigned_count = service.perform_bulk_assignment(limit: bulk_assignment_limit)
+    enqueue_legacy_queue_status_broadcast(inbox, service) if legacy_assignment && assigned_count.positive?
     Rails.logger.info "Assigned #{assigned_count} conversations for inbox #{inbox.id}"
   rescue StandardError => e
     Rails.logger.error "Bulk assignment failed for inbox #{inbox_id}: #{e.message}"
@@ -37,6 +43,14 @@ class AutoAssignment::AssignmentJob < ApplicationJob
   end
 
   private
+
+  def enqueue_legacy_queue_status_broadcast(inbox, service)
+    AutoAssignment::LegacyQueueStatusBroadcastJob.perform_later(
+      inbox_id: inbox.id,
+      conversation_ids: service.assigned_conversation_ids,
+      refresh_waiting: true
+    )
+  end
 
   # Release the in-flight marker only if we still own it. The atomic
   # compare-and-delete ensures a job whose TTL lapsed can't delete a newer

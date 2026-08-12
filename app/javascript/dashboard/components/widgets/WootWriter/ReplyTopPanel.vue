@@ -151,16 +151,15 @@ export default {
 </script>
 
 <template>
-  <div
-    class="flex justify-between gap-2 h-[3.25rem] items-center ltr:pl-3 ltr:pr-2 rtl:pr-3 rtl:pl-2"
-  >
+  <div class="flex min-h-[3.25rem] flex-wrap items-end gap-2 px-3 py-2">
     <EditorModeToggle
       :mode="mode"
       :disabled="disabled"
       :is-reply-restricted="isReplyRestricted"
       @toggle-mode="handleModeToggle"
     />
-    <div class="flex items-center mx-4 my-0">
+    <slot name="translation-controls" />
+    <div class="flex items-center ltr:ml-auto rtl:mr-auto">
       <div v-if="isMessageLengthReachingThreshold" class="text-xs">
         <span :class="charLengthClass">
           {{ characterLengthWarning }}

@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Γλώσσα προέλευσης",
+    "TARGET_LANGUAGE": "Γλώσσα προορισμού"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Παρακαλώ επιλέξτε συζήτηση από το αριστερό τμήμα",
     "CSAT_REPLY_MESSAGE": "Παρακαλώ αξιολογήστε τη συνομιλία",
@@ -298,7 +302,8 @@
       "REPLY_TO": "Reply to this message",
       "DELETE": "Διαγραφή",
       "CREATE_A_CANNED_RESPONSE": "Προσθήκη στις έτοιμες απαντήσεις",
-      "TRANSLATE": "Translate",
+      "TRANSLATE": "Μετάφραση",
+      "RETRANSLATE": "Μετάφραση ξανά",
       "COPY_PERMALINK": "Copy link to the message",
       "LINK_COPIED": "Message URL copied to the clipboard",
       "DELETE_CONFIRMATION": {

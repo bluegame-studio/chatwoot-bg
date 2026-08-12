@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "لغة المصدر",
+    "TARGET_LANGUAGE": "اللغة الهدف"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "الرجاء اختيار محادثة من قائمة المحادثات",
     "CSAT_REPLY_MESSAGE": "الرجاء تقييم المحادثة",
@@ -299,6 +303,7 @@
       "DELETE": "حذف",
       "CREATE_A_CANNED_RESPONSE": "إضافة إلى الردود الجاهزة",
       "TRANSLATE": "ترجم",
+      "RETRANSLATE": "ترجمة مرة أخرى",
       "COPY_PERMALINK": "نسخ الرابط إلى الرسالة",
       "LINK_COPIED": "تم نسخ عنوان URL للرسالة إلى الحافظة",
       "DELETE_CONFIRMATION": {

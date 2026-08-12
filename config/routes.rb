@@ -456,6 +456,8 @@ Rails.application.routes.draw do
             post :verify
             post :backup_codes
           end
+          resource :ai_translation_authorization, only: [:create]
+          resource :ai_translation, only: [:create]
           resources :sessions, only: [:index, :destroy]
         end
       end

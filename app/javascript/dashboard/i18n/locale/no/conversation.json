@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Kildespråk",
+    "TARGET_LANGUAGE": "Målspråk"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Velg en samtale fra venstre panel",
     "CSAT_REPLY_MESSAGE": "Please rate the conversation",
@@ -298,7 +302,8 @@
       "REPLY_TO": "Reply to this message",
       "DELETE": "Slett",
       "CREATE_A_CANNED_RESPONSE": "Add to canned responses",
-      "TRANSLATE": "Translate",
+      "TRANSLATE": "Oversett",
+      "RETRANSLATE": "Oversett på nytt",
       "COPY_PERMALINK": "Copy link to the message",
       "LINK_COPIED": "Message URL copied to the clipboard",
       "DELETE_CONFIRMATION": {

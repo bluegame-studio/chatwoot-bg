@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Forrásnyelv",
+    "TARGET_LANGUAGE": "Célnyelv"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Kérjük válassz egy beszélgetést a bal sávból",
     "CSAT_REPLY_MESSAGE": "Kérlek értékeld a beszélgetést",
@@ -299,6 +303,7 @@
       "DELETE": "Törlés",
       "CREATE_A_CANNED_RESPONSE": "Mentett válasz hozzáadása",
       "TRANSLATE": "Fordítás",
+      "RETRANSLATE": "Fordítás újra",
       "COPY_PERMALINK": "Link másolása az üzenetbe",
       "LINK_COPIED": "Üzenet URL címe másolva lett a vágólapra",
       "DELETE_CONFIRMATION": {

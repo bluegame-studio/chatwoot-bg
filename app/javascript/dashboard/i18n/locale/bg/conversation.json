@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "Изходен език",
+    "TARGET_LANGUAGE": "Целеви език"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "Please select a conversation from left pane",
     "CSAT_REPLY_MESSAGE": "Please rate the conversation",
@@ -298,7 +302,8 @@
       "REPLY_TO": "Reply to this message",
       "DELETE": "Изтрий",
       "CREATE_A_CANNED_RESPONSE": "Add to canned responses",
-      "TRANSLATE": "Translate",
+      "TRANSLATE": "Преведи",
+      "RETRANSLATE": "Преведи отново",
       "COPY_PERMALINK": "Copy link to the message",
       "LINK_COPIED": "Message URL copied to the clipboard",
       "DELETE_CONFIRMATION": {

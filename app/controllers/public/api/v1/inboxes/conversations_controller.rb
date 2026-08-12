@@ -9,7 +9,10 @@ class Public::Api::V1::Inboxes::ConversationsController < Public::Api::V1::Inbox
   def show; end
 
   def create
-    @conversation = create_conversation
+    ActiveRecord::Base.transaction do
+      @conversation = create_conversation
+      create_initial_message if initial_message?
+    end
   end
 
   def toggle_status
@@ -55,6 +58,32 @@ class Public::Api::V1::Inboxes::ConversationsController < Public::Api::V1::Inbox
 
   def create_conversation
     ConversationBuilder.new(params: conversation_params, contact_inbox: @contact_inbox).perform
+  end
+
+  def initial_message?
+    initial_message_params[:content].present? || params[:attachments].present?
+  end
+
+  def create_initial_message
+    message = @conversation.messages.new(initial_message_params)
+    params[:attachments]&.each do |uploaded_attachment|
+      message.attachments.new(
+        account_id: message.account_id,
+        file_type: helpers.file_type(uploaded_attachment&.content_type),
+        file: uploaded_attachment
+      )
+    end
+    message.save!
+  end
+
+  def initial_message_params
+    {
+      account_id: @conversation.account_id,
+      sender: @contact_inbox.contact,
+      content: params.permit(:content)[:content],
+      inbox_id: @conversation.inbox_id,
+      message_type: :incoming
+    }
   end
 
   def trigger_typing_event(event)

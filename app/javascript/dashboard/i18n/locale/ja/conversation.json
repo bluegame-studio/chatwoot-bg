@@ -1,4 +1,8 @@
 {
+  "AI_TRANSLATION": {
+    "SOURCE_LANGUAGE": "元の言語",
+    "TARGET_LANGUAGE": "対象言語"
+  },
   "CONVERSATION": {
     "SELECT_A_CONVERSATION": "左のリストから会話を選択してください",
     "CSAT_REPLY_MESSAGE": "会話の評価にご協力をお願いいたします。",
@@ -299,6 +303,7 @@
       "DELETE": "削除",
       "CREATE_A_CANNED_RESPONSE": "定型文応答に追加",
       "TRANSLATE": "翻訳",
+      "RETRANSLATE": "再翻訳",
       "COPY_PERMALINK": "メッセージへのリンクをコピー",
       "LINK_COPIED": "メッセージのURLがクリップボードにコピーされました",
       "DELETE_CONFIRMATION": {
