@@ -2,6 +2,7 @@ class ContentAttributeValidator < ActiveModel::Validator
   ALLOWED_SELECT_ITEM_KEYS = [:title, :value].freeze
   ALLOWED_CARD_ITEM_KEYS = [:title, :description, :media_url, :actions].freeze
   ALLOWED_CARD_ITEM_ACTION_KEYS = [:text, :type, :payload, :uri].freeze
+  ALLOWED_BUTTON_ITEM_KEYS = [:text, :type, :uri].freeze
   ALLOWED_FORM_ITEM_KEYS = [:type, :placeholder, :label, :name, :options, :default, :required, :pattern, :title, :pattern_error].freeze
   ALLOWED_ARTICLE_KEYS = [:title, :description, :link].freeze
 
@@ -14,6 +15,10 @@ class ContentAttributeValidator < ActiveModel::Validator
       validate_items!(record)
       validate_item_attributes!(record, ALLOWED_CARD_ITEM_KEYS)
       validate_item_actions!(record)
+    when 'buttons'
+      validate_items!(record)
+      validate_item_attributes!(record, ALLOWED_BUTTON_ITEM_KEYS)
+      validate_buttons!(record)
     when 'form'
       validate_items!(record)
       validate_item_attributes!(record, ALLOWED_FORM_ITEM_KEYS)
@@ -48,5 +53,23 @@ class ContentAttributeValidator < ActiveModel::Validator
     item_action_keys = record.items.collect { |item| item[:actions].collect(&:keys) }
     invalid_keys = item_action_keys.flatten.compact.map(&:to_sym) - ALLOWED_CARD_ITEM_ACTION_KEYS
     record.errors.add(:content_attributes, "contains invalid keys for actions:  #{invalid_keys}") if invalid_keys.present?
+  end
+
+  def validate_buttons!(record)
+    record.errors.add(:content, 'is required for button messages') if record.content.blank?
+    record.errors.add(:content, 'is too long for a button message (maximum is 640 characters)') if record.content.to_s.length > 640
+    return if record.items.blank?
+
+    record.errors.add(:content_attributes, 'supports a maximum of 3 buttons') if record.items.size > 3
+
+    record.items.each do |item|
+      button = item.with_indifferent_access
+      unless button[:type] == 'link' && button[:text].present? && button[:uri].present?
+        record.errors.add(:content_attributes, 'buttons require text, type link, and uri')
+      end
+      if button[:text].to_s.length > 20
+        record.errors.add(:content_attributes, 'button text is too long (maximum is 20 characters)')
+      end
+    end
   end
 end

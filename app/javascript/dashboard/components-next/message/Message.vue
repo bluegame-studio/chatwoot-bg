@@ -41,6 +41,7 @@ import LocationBubble from './bubbles/Location.vue';
 import CSATBubble from './bubbles/CSAT.vue';
 import FormBubble from './bubbles/Form.vue';
 import CardsBubble from './bubbles/Cards.vue';
+import ButtonsBubble from './bubbles/Buttons.vue';
 import VoiceCallBubble from './bubbles/VoiceCall.vue';
 
 import MessageError from './MessageError.vue';
@@ -305,6 +306,10 @@ const componentToRender = computed(() => {
     return CardsBubble;
   }
 
+  if (props.contentType === CONTENT_TYPES.BUTTONS) {
+    return ButtonsBubble;
+  }
+
   if (
     [CONTENT_TYPES.INPUT_SELECT, CONTENT_TYPES.FORM].includes(props.contentType)
   ) {
@@ -382,7 +387,10 @@ const payloadForContextMenu = computed(() => {
 const contextMenuEnabledOptions = computed(() => {
   const hasText = !!props.content;
   const hasAttachments = !!(props.attachments && props.attachments.length > 0);
-  const hasStructuredContent = props.contentType === CONTENT_TYPES.CARDS;
+  const hasStructuredContent = [
+    CONTENT_TYPES.CARDS,
+    CONTENT_TYPES.BUTTONS,
+  ].includes(props.contentType);
 
   const isOutgoing = props.messageType === MESSAGE_TYPES.OUTGOING;
   const isFailedOrProcessing =
@@ -416,6 +424,7 @@ const shouldRenderMessage = computed(() => {
   const isAnIntegrationMessage =
     props.contentType === CONTENT_TYPES.INTEGRATIONS;
   const isCardsContentType = props.contentType === CONTENT_TYPES.CARDS;
+  const isButtonsContentType = props.contentType === CONTENT_TYPES.BUTTONS;
   const isFailedMessage = props.status === MESSAGE_STATUS.FAILED;
   const hasExternalError = !!props.contentAttributes?.externalError;
 
@@ -424,6 +433,7 @@ const shouldRenderMessage = computed(() => {
     props.content ||
     isEmailContentType ||
     isCardsContentType ||
+    isButtonsContentType ||
     isUnsupported ||
     isAnIntegrationMessage ||
     isFailedMessage ||

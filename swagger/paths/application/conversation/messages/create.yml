@@ -105,7 +105,7 @@ requestBody:
             example: false
           content_type:
             type: string
-            enum: ['text', 'input_email', 'cards', 'input_select', 'form', 'article']
+            enum: ['text', 'input_email', 'cards', 'buttons', 'input_select', 'form', 'article']
             description: Content type of the message
             example: text
           content_attributes:

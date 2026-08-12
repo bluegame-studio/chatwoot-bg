@@ -62,6 +62,7 @@ export const CONTENT_TYPES = {
   INPUT_EMAIL: 'input_email',
   INPUT_SELECT: 'input_select',
   CARDS: 'cards',
+  BUTTONS: 'buttons',
   FORM: 'form',
   ARTICLE: 'article',
   INCOMING_EMAIL: 'incoming_email',

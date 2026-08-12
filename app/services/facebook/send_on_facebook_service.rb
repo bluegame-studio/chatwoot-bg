@@ -6,7 +6,9 @@ class Facebook::SendOnFacebookService < Base::SendOnChannelService
   end
 
   def perform_reply
-    if card_message?
+    if button_message?
+      send_message_to_facebook fb_button_message_params
+    elsif card_message?
       send_message_to_facebook fb_card_message_params
     elsif message.content.present?
       send_message_to_facebook fb_text_message_params
@@ -76,6 +78,28 @@ class Facebook::SendOnFacebookService < Base::SendOnChannelService
 
   def card_message?
     message.content_type == 'cards' && message.content_attributes['items'].any?
+  end
+
+  def button_message?
+    message.content_type == 'buttons' && message.content_attributes['items'].any?
+  end
+
+  def fb_button_message_params
+    params = {
+      recipient: { id: contact.get_source_id(inbox.id) },
+      message: {
+        attachment: {
+          type: 'template',
+          payload: {
+            template_type: 'button',
+            text: message.outgoing_content,
+            buttons: message.content_attributes['items'].map { |item| fb_card_button(item) }
+          }
+        }
+      }
+    }
+
+    merge_human_agent_tag(params)
   end
 
   def fb_card_message_params
