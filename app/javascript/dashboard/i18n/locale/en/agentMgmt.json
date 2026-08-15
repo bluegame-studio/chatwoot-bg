@@ -9,6 +9,27 @@
       "ADMINISTRATOR": "Administrator",
       "AGENT": "Agent"
     },
+    "EXCLUSIVE_LINK": {
+      "TITLE": "Exclusive agent link",
+      "BADGE": "New",
+      "LABEL": "Exclusive link",
+      "PROTOCOL": "https://",
+      "PLACEHOLDER": "example.com/exclusive/Ab3K9X",
+      "COPY": "Copy",
+      "REGENERATE": "Regenerate",
+      "COPY_SUCCESS": "Exclusive link copied",
+      "COPY_ERROR": "Could not copy the exclusive link",
+      "HELP_TEXT": "Each agent can have one active exclusive link. After the regenerated link is saved, the old link becomes invalid.",
+      "INBOXES": {
+        "LABEL": "Applicable inbox",
+        "REQUIRED": "*",
+        "PLACEHOLDER": "Select an inbox",
+        "SEARCH_PLACEHOLDER": "Search inboxes",
+        "EMPTY_STATE": "No website inboxes are assigned to this agent",
+        "ERROR": "An applicable inbox is required when an exclusive link is set",
+        "HELP_TEXT": "Only one website inbox can be selected. Only website inboxes that the agent has joined will be shown. When a user opens the exclusive link, the conversation enters the selected inbox."
+      }
+    },
     "COUNT": "{n} agent | {n} agents",
     "LIST": {
       "404": "There are no agents associated to this account",

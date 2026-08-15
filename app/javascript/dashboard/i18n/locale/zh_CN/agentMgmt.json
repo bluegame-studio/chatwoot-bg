@@ -9,6 +9,27 @@
       "ADMINISTRATOR": "管理员",
       "AGENT": "客服"
     },
+    "EXCLUSIVE_LINK": {
+      "TITLE": "专属客服链接",
+      "BADGE": "新增",
+      "LABEL": "专属链接",
+      "PROTOCOL": "https://",
+      "PLACEHOLDER": "example.com/exclusive/Ab3K9X",
+      "COPY": "复制",
+      "REGENERATE": "重新生成",
+      "COPY_SUCCESS": "专属链接已复制",
+      "COPY_ERROR": "专属链接复制失败",
+      "HELP_TEXT": "一个客服仅保留 1 条有效专属链接；重新生成并保存后旧链接失效。",
+      "INBOXES": {
+        "LABEL": "适用收件箱",
+        "REQUIRED": "*",
+        "PLACEHOLDER": "请选择收件箱",
+        "SEARCH_PLACEHOLDER": "搜索收件箱",
+        "EMPTY_STATE": "当前客服未加入任何网站类型收件箱",
+        "ERROR": "填写专属链接后必须选择适用收件箱",
+        "HELP_TEXT": "仅支持单选网站类型收件箱；仅展示当前客服已经加入的网站收件箱。用户点击专属链接时，会进入所选收件箱。"
+      }
+    },
     "COUNT": "{n} agent | {n} agents",
     "LIST": {
       "404": "此账号没有关联客服",

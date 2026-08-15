@@ -6,6 +6,7 @@
 #  active_at                :datetime
 #  auto_offline             :boolean          default(TRUE), not null
 #  availability             :integer          default("online"), not null
+#  exclusive_link           :string
 #  role                     :integer          default("agent")
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -20,6 +21,7 @@
 #  index_account_users_on_account_id                (account_id)
 #  index_account_users_on_agent_capacity_policy_id  (agent_capacity_policy_id)
 #  index_account_users_on_custom_role_id            (custom_role_id)
+#  index_account_users_on_exclusive_link            (exclusive_link) UNIQUE
 #  index_account_users_on_user_id                   (user_id)
 #  uniq_user_id_per_account_id                      (account_id,user_id) UNIQUE
 #
@@ -36,6 +38,8 @@ class AccountUser < ApplicationRecord
 
   accepts_nested_attributes_for :account
 
+  before_validation :normalize_exclusive_link, if: :will_save_change_to_exclusive_link?
+
   after_create_commit :notify_creation, :create_notification_setting
   after_destroy :notify_deletion, :remove_user_from_account
   after_save :update_presence_in_redis, if: :saved_change_to_availability?
@@ -43,6 +47,7 @@ class AccountUser < ApplicationRecord
   after_update_commit :invalidate_filtered_unread_count_visibility_update, if: :filtered_unread_count_visibility_changed?
 
   validates :user_id, uniqueness: { scope: :account_id }
+  validates :exclusive_link, uniqueness: true, allow_blank: true
 
   def create_notification_setting
     setting = user.notification_settings.new(account_id: account.id)
@@ -69,6 +74,10 @@ class AccountUser < ApplicationRecord
   end
 
   private
+
+  def normalize_exclusive_link
+    self.exclusive_link = exclusive_link.to_s.strip.sub(%r{\Ahttps?://}i, '').presence
+  end
 
   def notify_creation
     Rails.configuration.dispatcher.dispatch(AGENT_ADDED, Time.zone.now, account: account)

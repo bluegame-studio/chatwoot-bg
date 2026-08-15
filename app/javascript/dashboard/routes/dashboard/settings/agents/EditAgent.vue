@@ -1,13 +1,14 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required, minLength } from '@vuelidate/validators';
+import { required, requiredIf, minLength } from '@vuelidate/validators';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
 import { useI18n } from 'vue-i18n';
 import { useAlert } from 'dashboard/composables';
 import Button from 'dashboard/components-next/button/Button.vue';
 import Auth from '../../../../api/auth';
 import wootConstants from 'dashboard/constants/globals';
+import ExclusiveAgentLink from './ExclusiveAgentLink.vue';
 
 const props = defineProps({
   id: {
@@ -38,6 +39,10 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  exclusiveLink: {
+    type: String,
+    default: '',
+  },
 });
 
 const emit = defineEmits(['close']);
@@ -51,17 +56,23 @@ const agentName = ref(props.name);
 const agentAvailability = ref(props.availability);
 const selectedRoleId = ref(props.customRoleId || props.type);
 const agentCredentials = ref({ email: props.email });
+const agentExclusiveLink = ref(props.exclusiveLink || '');
+const selectedInboxId = ref('');
 
 const rules = {
   agentName: { required, minLength: minLength(1) },
   selectedRoleId: { required },
   agentAvailability: { required },
+  selectedInboxId: {
+    required: requiredIf(() => Boolean(agentExclusiveLink.value)),
+  },
 };
 
 const v$ = useVuelidate(rules, {
   agentName,
   selectedRoleId,
   agentAvailability,
+  selectedInboxId,
 });
 
 const pageTitle = computed(
@@ -126,6 +137,7 @@ const editAgent = async () => {
       id: props.id,
       name: agentName.value,
       availability: agentAvailability.value,
+      exclusive_link: agentExclusiveLink.value,
     };
 
     if (selectedRole.value.name.startsWith('custom_')) {
@@ -203,6 +215,15 @@ const resetPassword = async () => {
           </span>
         </label>
       </div>
+
+      <ExclusiveAgentLink
+        v-model:exclusive-link="agentExclusiveLink"
+        v-model:selected-inbox-id="selectedInboxId"
+        :agent-id="id"
+        :inbox-error="
+          Boolean(agentExclusiveLink) && v$.selectedInboxId.$invalid
+        "
+      />
 
       <div class="flex flex-row justify-start w-full gap-2 px-0 py-2">
         <div class="w-[50%] ltr:text-left rtl:text-right">
