@@ -104,6 +104,7 @@ CLAUDE.local.md
 .pnpm-store/*
 local/
 Procfile.worktree
+/docker-compose.override.yml
 
 # Local test bot configuration
 /scripts/*.env
