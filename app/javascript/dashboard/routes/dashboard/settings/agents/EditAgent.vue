@@ -43,6 +43,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  exclusiveInboxId: {
+    type: Number,
+    default: null,
+  },
 });
 
 const emit = defineEmits(['close']);
@@ -57,7 +61,7 @@ const agentAvailability = ref(props.availability);
 const selectedRoleId = ref(props.customRoleId || props.type);
 const agentCredentials = ref({ email: props.email });
 const agentExclusiveLink = ref(props.exclusiveLink || '');
-const selectedInboxId = ref('');
+const selectedInboxId = ref(props.exclusiveInboxId || '');
 
 const rules = {
   agentName: { required, minLength: minLength(1) },
@@ -138,6 +142,9 @@ const editAgent = async () => {
       name: agentName.value,
       availability: agentAvailability.value,
       exclusive_link: agentExclusiveLink.value,
+      exclusive_inbox_id: agentExclusiveLink.value
+        ? selectedInboxId.value
+        : null,
     };
 
     if (selectedRole.value.name.startsWith('custom_')) {

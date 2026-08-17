@@ -307,6 +307,14 @@ export default {
       }
       return this.inbox.name;
     },
+    isAPIWebsiteUrlInvalid() {
+      if (!this.isAPIInbox || !this.channelWebsiteUrl?.trim()) return false;
+
+      const websiteUrl = this.channelWebsiteUrl.match(/^https?:\/\//i)
+        ? this.channelWebsiteUrl
+        : `https://${this.channelWebsiteUrl}`;
+      return !shouldBeUrl(websiteUrl);
+    },
     canLocktoSingleConversation() {
       return (
         this.isASmsInbox ||
@@ -892,16 +900,24 @@ export default {
             </SettingsFieldSection>
 
             <SettingsFieldSection
-              v-if="isAWebWidgetInbox"
+              v-if="isAWebWidgetInbox || isAPIInbox"
               :label="$t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_DOMAIN.LABEL')"
             >
               <woot-input
                 v-model="channelWebsiteUrl"
                 class="[&>input]:!mb-0"
+                :class="{ error: isAPIWebsiteUrlInvalid }"
                 :placeholder="
                   $t(
                     'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_DOMAIN.PLACEHOLDER'
                   )
+                "
+                :error="
+                  isAPIWebsiteUrlInvalid
+                    ? $t(
+                        'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_WEBHOOK_URL.ERROR'
+                      )
+                    : ''
                 "
               />
             </SettingsFieldSection>
@@ -1296,7 +1312,7 @@ export default {
               <NextButton
                 v-if="isAPIInbox"
                 type="submit"
-                :disabled="v$.webhookUrl.$invalid"
+                :disabled="v$.webhookUrl.$invalid || isAPIWebsiteUrlInvalid"
                 :label="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
                 :is-loading="uiFlags.isUpdating"
                 @click="updateInbox"

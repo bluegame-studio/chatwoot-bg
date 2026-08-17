@@ -34,22 +34,29 @@ const DEFAULT_EXCLUSIVE_LINK_DOMAIN = 'example.com';
 const store = useStore();
 const { t } = useI18n();
 const inboxes = useMapGetter('inboxes/getInboxes');
-const websiteInboxes = useMapGetter('inboxes/getWebsiteInboxes');
-const eligibleWebsiteInboxes = ref([]);
+const eligibleInboxes = ref([]);
 const isLoadingEligibleInboxes = ref(true);
 const fullExclusiveLink = computed(() =>
   exclusiveLink.value ? `https://${exclusiveLink.value}` : ''
 );
 
+const candidateInboxes = computed(() =>
+  inboxes.value.filter(
+    inbox =>
+      ['Channel::WebWidget', 'Channel::Api'].includes(inbox.channel_type) &&
+      inbox.website_url
+  )
+);
+
 const inboxOptions = computed(() =>
-  eligibleWebsiteInboxes.value.map(inbox => ({
+  eligibleInboxes.value.map(inbox => ({
     value: inbox.id,
     label: inbox.name,
   }))
 );
 
 const selectedInboxDomain = computed(() => {
-  const selectedInbox = eligibleWebsiteInboxes.value.find(
+  const selectedInbox = eligibleInboxes.value.find(
     inbox => String(inbox.id) === String(selectedInboxId.value)
   );
 
@@ -100,31 +107,31 @@ const copyExclusiveLink = async () => {
   }
 };
 
-const fetchEligibleWebsiteInboxes = async () => {
+const fetchEligibleInboxes = async () => {
   try {
     if (!inboxes.value.length) {
       await store.dispatch('inboxes/get');
     }
 
     const membershipResponses = await Promise.all(
-      websiteInboxes.value.map(inbox =>
+      candidateInboxes.value.map(inbox =>
         store.dispatch('inboxMembers/get', { inboxId: inbox.id })
       )
     );
 
-    eligibleWebsiteInboxes.value = websiteInboxes.value.filter((_, index) =>
+    eligibleInboxes.value = candidateInboxes.value.filter((_, index) =>
       membershipResponses[index]?.data?.payload?.some(
         member => member.id === props.agentId
       )
     );
   } catch {
-    eligibleWebsiteInboxes.value = [];
+    eligibleInboxes.value = [];
   } finally {
     isLoadingEligibleInboxes.value = false;
   }
 };
 
-onMounted(fetchEligibleWebsiteInboxes);
+onMounted(fetchEligibleInboxes);
 </script>
 
 <template>

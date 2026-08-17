@@ -12,4 +12,5 @@ json.name resource.name
 json.role resource.role
 json.thumbnail resource.avatar_url
 json.exclusive_link resource.current_account_user&.exclusive_link
+json.exclusive_inbox_id resource.current_account_user&.exclusive_inbox_id
 json.custom_role_id resource.current_account_user&.custom_role_id if ChatwootApp.enterprise?

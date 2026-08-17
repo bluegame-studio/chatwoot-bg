@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_15_000000) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_16_000000) do
   # These extensions should be enabled to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -53,10 +53,14 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_15_000000) do
     t.bigint "custom_role_id"
     t.bigint "agent_capacity_policy_id"
     t.string "exclusive_link"
+    t.bigint "exclusive_inbox_id"
+    t.string "exclusive_link_token"
+    t.index ["account_id", "exclusive_link_token"], name: "index_account_users_on_account_and_exclusive_token", unique: true, where: "(exclusive_link_token IS NOT NULL)"
     t.index ["account_id", "user_id"], name: "uniq_user_id_per_account_id", unique: true
     t.index ["account_id"], name: "index_account_users_on_account_id"
     t.index ["agent_capacity_policy_id"], name: "index_account_users_on_agent_capacity_policy_id"
     t.index ["custom_role_id"], name: "index_account_users_on_custom_role_id"
+    t.index ["exclusive_inbox_id"], name: "index_account_users_on_exclusive_inbox_id"
     t.index ["exclusive_link"], name: "index_account_users_on_exclusive_link", unique: true
     t.index ["user_id"], name: "index_account_users_on_user_id"
   end
@@ -1497,6 +1501,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_15_000000) do
     t.index ["inbox_id"], name: "index_working_hours_on_inbox_id"
   end
 
+  add_foreign_key "account_users", "inboxes", column: "exclusive_inbox_id", on_delete: :nullify
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "inboxes", "portals"

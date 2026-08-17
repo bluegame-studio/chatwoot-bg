@@ -56,11 +56,11 @@ class Api::V1::Accounts::AgentsController < Api::V1::Accounts::BaseController
   end
 
   def account_user_attributes
-    [:role, :availability, :auto_offline, :exclusive_link]
+    [:role, :availability, :auto_offline, :exclusive_link, :exclusive_inbox_id]
   end
 
   def allowed_agent_params
-    [:name, :email, :role, :availability, :auto_offline, :exclusive_link]
+    [:name, :email, :role, :availability, :auto_offline, :exclusive_link, :exclusive_inbox_id]
   end
 
   def agent_params

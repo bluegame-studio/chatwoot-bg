@@ -3,12 +3,20 @@ import { mapGetters } from 'vuex';
 import { useVuelidate } from '@vuelidate/core';
 import { useAlert } from 'dashboard/composables';
 import { required } from '@vuelidate/validators';
+import { shouldBeUrl } from 'shared/helpers/Validators';
 import router from '../../../../index';
 import PageHeader from '../../SettingsSubPageHeader.vue';
 import NextButton from 'dashboard/components-next/button/Button.vue';
 
 const shouldBeWebhookUrl = (value = '') =>
   value ? value.startsWith('http') : true;
+
+const shouldBeWebsiteUrl = (value = '') => {
+  if (!value) return true;
+
+  const websiteUrl = value.match(/^https?:\/\//i) ? value : `https://${value}`;
+  return shouldBeUrl(websiteUrl);
+};
 
 export default {
   components: {
@@ -22,6 +30,7 @@ export default {
     return {
       channelName: '',
       webhookUrl: '',
+      websiteUrl: '',
     };
   },
   computed: {
@@ -32,6 +41,7 @@ export default {
   validations: {
     channelName: { required },
     webhookUrl: { shouldBeWebhookUrl },
+    websiteUrl: { shouldBeWebsiteUrl },
   },
   methods: {
     async createChannel() {
@@ -46,6 +56,7 @@ export default {
           channel: {
             type: 'api',
             webhook_url: this.webhookUrl,
+            website_url: this.websiteUrl?.trim(),
           },
         });
 
@@ -109,6 +120,23 @@ export default {
         <p class="help-text">
           {{ $t('INBOX_MGMT.ADD.API_CHANNEL.WEBHOOK_URL.SUBTITLE') }}
         </p>
+      </div>
+
+      <div class="flex-shrink-0 flex-grow-0">
+        <label :class="{ error: v$.websiteUrl.$error }">
+          {{ $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_DOMAIN.LABEL') }}
+          <input
+            v-model="websiteUrl"
+            type="text"
+            :placeholder="
+              $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_DOMAIN.PLACEHOLDER')
+            "
+            @blur="v$.websiteUrl.$touch"
+          />
+          <span v-if="v$.websiteUrl.$error" class="message">
+            {{ $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_WEBHOOK_URL.ERROR') }}
+          </span>
+        </label>
       </div>
 
       <div class="w-full mt-4">
