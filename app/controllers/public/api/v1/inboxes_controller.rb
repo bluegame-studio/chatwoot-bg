@@ -25,9 +25,13 @@ class Public::Api::V1::InboxesController < PublicController
     return if params[:conversation_id].blank?
 
     @conversation = if @contact_inbox.hmac_verified?
-                      @contact_inbox.contact.conversations.find_by!(display_id: params[:conversation_id])
+                      contact_conversations.find_by!(display_id: params[:conversation_id])
                     else
                       @contact_inbox.conversations.find_by!(display_id: params[:conversation_id])
                     end
+  end
+
+  def contact_conversations
+    @contact_inbox.contact.conversations.where(inbox_id: @contact_inbox.inbox_id)
   end
 end
